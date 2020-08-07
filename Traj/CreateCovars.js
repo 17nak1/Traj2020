@@ -1,4 +1,5 @@
 const fs = require('fs');
+let linear = require('./everpolate').linear
 let rootDirData ='./private_data';
 
 let create_covars = function(endTime="2020-04-27",predTime=null){
@@ -13,7 +14,7 @@ let create_covars = function(endTime="2020-04-27",predTime=null){
 		"Total patients approved for testing as of Reporting Date",
 		"Under Investigation"];
 	let dataCovar_Index = [];	
-	let dataCovar = [["Date","TotalTests","Pending"]];
+	let dataCovar = [];
 	let dataCovar_temp = lines[0].replace(/['"]+/g, '').split(',');
 	for(let i = 0; i < selected_colnames.length; i++){
 		dataCovar_Index.push(dataCovar_temp.indexOf(selected_colnames[i]));
@@ -34,10 +35,22 @@ let create_covars = function(endTime="2020-04-27",predTime=null){
 		}
 	}
 
-	time = new Array(dataCovar[dataCovar.length-1][dataCovar_Index[0]]).fill(0)
-	var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-	var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
-	alert(diffDays);	
+	let coaverTimes = dataCovar.map(x => x[0]);
+	let coaverData = dataCovar.map(x => x[1]);
+	let timeLength = dataCovar[dataCovar.length-1][dataCovar_Index[0]];
+	let time = Array.from(Array(timeLength), (_, i) => i + 1);
+
+	let total_tests = linear(time, coaverTimes, coaverData);
+	total_tests = total_tests.map(x => Math.ceil(x));
+  
+  tests = total_tests.map( (_,i,arr) => Math.max((arr[i]) - (arr[i-1]),0));
+	tests = tests.map( (_,i,arr) => Math.ceil(arr[i] * 0.5 + arr[i+1] * 0.5));
+	tests[timeLength - 1] = tests[timeLength - 2];
+
+	data = time.map( (x,i) => [x,tests[i]]);
+	data.unshift(["time","tests"]);
+	
+	console.log('finish');
 }
 
 create_covars();
