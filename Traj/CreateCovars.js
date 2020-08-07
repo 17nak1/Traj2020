@@ -25,7 +25,7 @@ let create_covars = function(endTime="2020-04-27",predTime=null){
 		if(temp.length > 1) {
 			tempDate = new Date(temp[dataCovar_Index[0]]);
 			if( tempDate > startdate && tempDate <= tf){
-				tempDayCount = Math.ceil(Math.abs(tempDate - t0) / (1000 * 3600 * 24));
+				let tempDayCount = Math.ceil(Math.abs(tempDate - t0) / (1000 * 3600 * 24));
 			  let tempcovar =	[tempDayCount];
 				for(let j = 1; j < selected_colnames.length; j++){
 					tempcovar.push(Number(temp[dataCovar_Index[j]]));
@@ -49,11 +49,15 @@ let create_covars = function(endTime="2020-04-27",predTime=null){
 
 	data = time.map( (x,i) => [x,tests[i]]);
 	data.unshift(["time","tests"]);
-	
-	console.log('finish');
-}
 
-create_covars();
-console.log("finish");
+	if (predTime != null) {
+    predTime = new Date(predTime);
+		let add_time = Math.ceil(Math.abs(tf - predTime) / (1000 * 3600 * 24));
+		for(let i =0; i < add_time; i++)
+			data.push([timeLength + i,10e3]);
+	}
+	
+	return data;
+}
 
 module.exports = create_covars;
