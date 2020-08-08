@@ -3,7 +3,7 @@ let linear = require('./everpolate').linear
 let rootDirData ='./private_data';
 
 
-let create_dataset = function(endTime="2020-05-04",predTime="2020-05-06"){
+let create_dataset = function(endTime="2020-05-04",predTime=null){
   t0 = new Date("2019-12-31");
   tf = new Date(endTime);
 
