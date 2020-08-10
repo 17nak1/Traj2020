@@ -1,0 +1,22 @@
+{
+  "name": "traj2020",
+  "version": "1.0.0",
+  "description": "traj2020",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/17nak1/Traj2020.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/17nak1/Traj2020/issues"
+  },
+  "homepage": "https://github.com/17nak1/Traj2020#readme",
+  "dependencies": {
+    "math-erf": "^1.0.0",
+    "seedrandom": "^3.0.5"
+  }
+}
