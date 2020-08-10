@@ -1,53 +1,16 @@
 
-const { coef, partrans } = require("./helpers")
-const tmofInternal = function (object, params, est, transform) {
+const { coef, partrans } = require("./helpers");
+const { trajectory } = require("trajectory");
+const snippet = require("exampleJs/modelSnippet.js");
+const { minimInternal } = require("minimInternal.js");
 
-  const ep = "In traj.match.objfun";
-  if (!est) est = [];
-  // est <- as.character(est)
-
-  if (!params) params = coef(object);
-  // if ((!is.numeric(params))||(is.null(names(params))))
-  //   stop(ep,sQuote("params")," must be a named numeric vector",call.=FALSE)
-  if (transform)
-    params = partrans(object,params,dir="toEstimationScale");
-  let parEstIdx = match(est,names(params))//????? it returns index, but maybe in the key of object order Changed
-  if (any(is.na(par.est.idx)))
-    stop(ep,"parameter(s): ",
-         paste(sapply(est[is.na(par.est.idx)],sQuote),collapse=","),
-         " not found in ",sQuote("params"),call.=FALSE)
-
-  function (par) {
-    pompLoad(object)
-    params[par.est.idx] <- par
-    if (transform)
-      tparams <- partrans(object,params,dir="fromEstimationScale")
-    d <- dmeasure(
-      object,
-      y=object@data,
-      x=trajectory(
-        object,
-        params=if (transform) tparams else params,
-        ...
-      ),
-      times=time(object),
-      params=if (transform) tparams else params,
-      log=TRUE
-    )
-    pompUnload(object)
-    -sum(d)
-  }
-}
-
-
-const trajMatch = function (object, start, est = [],
-            method = c("Nelder-Mead","subplex","SANN","BFGS", "sannbox","nloptr"),transform = false)
-{
-
+exports.trajMatch = function (object, start, est = [],
+   method = c("Nelder-Mead","subplex","SANN","BFGS", "sannbox","nloptr"),transform = false) {
+  
   if (!start) start = coef(object);
 
-  let m = minim.internal(
-    objfun=traj.match.objfun(
+  let m = minimInternal(
+     objfun=trajMatchObjfun(
       object=object,
       params=start,
       est=est,
@@ -80,22 +43,57 @@ const trajMatch = function (object, start, est = [],
   }
 }
 
+const trajMatchObjfun  = function (object, params, est, transform = FALSE, args) {
+  tmofInternal(
+    object=object,
+    params=params,
+    est=est,
+    transform=transform,
+    args
+  )
+}
 
-setMethod(
-  "traj.match",
-  signature=signature(object="traj.matched.pomp"),
-  function (object, est, transform, ...)
-  {
-    if (missing(est)) est <- object@est
-    if (missing(transform)) transform <- object@transform
+const tmofInternal = function (object, params, est, transform, args) {
 
-    f <- selectMethod("traj.match","pomp")
+  ep = "in traj.match.objfun : "
+  
+  if (!est) est = [];
 
-    f(
-      object=object,
-      est=est,
-      transform=transform,
-      ...
-    )
+  if (Object.keys(params).length === 0) params = coef(object);
+  
+  // if ((!is.numeric(params))||(is.null(names(params))))
+  //   throw new Error(ep+ "'params' must be a named numeric vector");
+  if (transform) {
+    params = partrans(object,params,dir="toEstimationScale");
   }
-)
+    
+  // it does match(est,names(params))
+  let parEstIdx = []; 
+  for (let i = 0; i < est.length; i++) {
+    for (let j = 0; j < Object.keys(params).length; j++) {
+      if(est[i] === Object.keys(params)[j]) parEstIdx.push(j);
+    }
+  }
+
+  if (parEstIdx.some(a => {return a === NaN}))
+    throw new Error(ep + "est does not match with parameters")
+
+  return function (par) {
+    let d;
+    params[parEstIdx] = par
+    if (transform) tparams = partrans(object,params,dir="fromEstimationScale")
+    d = snippet.dmeasure(
+      object,
+      y=object.data,
+      x=trajectory(
+        object,
+        params = transform? tparams : params,
+        args
+      ),
+      times = object.times,
+      params = transform? tparams : params,
+      log = true
+    )
+    return -d.reduce((a, b) => a + b, 0);
+  }
+}
