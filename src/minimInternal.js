@@ -1,8 +1,9 @@
-const { partrans } = require("./helpers")
-const subplex = require("../subplex/run.js")
+const { partrans } = require("./helpers");
+const subplex = require("../subplex/run.js");
+const { tmofInternal } = require("./tmofInternal.js");
 
 exports.minimInternal = function(objfun, start, est, object, method, transform,
-  lower = NULL, upper = NULL, lb = lower, ub = upper)
+  lower = null, upper = null, lb = lower, ub = upper)
 {
 
   let ep = "In minimInternal:";
@@ -21,17 +22,17 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
     //     sQuote("start"),call.=FALSE)
     if (est.length > 0) guess = start.slice(...est);
   }
-
+  let val;
   if (est.length === 0) {
 
-    val <- objfun(guess)
+    val = tmofInternal(guess)
     conv = NA
     evals = [1,0];
     msg = "no optimization performed"
 
   } else {
 
-    opts <- list(...)
+    // opts <- list(...)
 
     if (method == 'subplex') {
       opt = subplex(par=guess,fn=objfun,control=opts)
@@ -43,27 +44,26 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
       // opt <- optim(par=guess,fn=objfun,method=method,control=opts)
     }
 
-    msg <- as.character(opt$message)
+    // msg <- as.character(opt$message)
 
-    if (method == "nloptr") {
+    // if (method == "nloptr") {
 
-      val <- opt$objective
-      start[est] <- unname(opt$solution)
-      conv <- opt$status
-      evals <- opt$iterations
+    //   val <- opt$objective
+    //   start[est] <- unname(opt$solution)
+    //   conv <- opt$status
+    //   evals <- opt$iterations
 
-    } else {
+    // } else {
 
-      val <- opt$value
-      start[est] <- unname(opt$par)
-      conv <- opt$convergence
-      evals <- opt$counts
+    //   val <- opt$value
+    //   start[est] <- unname(opt$par)
+    //   conv <- opt$convergence
+    //   evals <- opt$counts
 
-    }
+    // }
   }
 
-  if (transform)
-    start = partrans(object,start,dir="fromEstimationScale");
+  if (transform) start = partrans(object, start, dir = "fromEstimationScale");
 
   return {
     params : start,
