@@ -1,12 +1,16 @@
 
 
-let trajectory_internal = function (object, params, times, t0, as_data_frame = false, _getnativesymbolinfo = true, verbose) {
+exports.trajInternal = function (params, args){
 
-  times = [1,6,3,5];
+//object, params, times, t0, as_data_frame = false, _getnativesymbolinfo = true, verbose) {
 
+  let object = args.object;
+  let start = params;
+  let times = args.times;
+  let t0 = args.t0;
   let ep = 'in \"trajectory\": ';
 
-  verbose = verbose ? true : false;
+  let verbose = args.verbose ? true : false;
   // as.data.frame <- as.logical(as.data.frame)
 
   if (times === undefined || !Array.isArray(times))
@@ -39,11 +43,11 @@ let trajectory_internal = function (object, params, times, t0, as_data_frame = f
 
   // params <- as.matrix(params)
   // nrep <- ncol(params)
-  // paramnames <- rownames(params)
-  // if (is.null(paramnames))
-  //   stop(ep,sQuote("params")," must have rownames",call.=FALSE)
+  paramnames =Object.keys(params);
+  if (paramnames.length <= 0)
+    throw new Error(ep + '\"params\" must have rownames');
 
-  // x0 <- init.state(object,params=params,t0=t0)
+  x0 = init.state(object,params=params,t0=t0)
   // nvar <- nrow(x0)
   // statenames <- rownames(x0)
   // dim(x0) <- c(nvar,nrep,1)
@@ -134,7 +138,3 @@ let trajectory_internal = function (object, params, times, t0, as_data_frame = f
 
   // x
 }
-
-trajectory_internal();
-
-exports.trajectory_internal = trajectory_internal;

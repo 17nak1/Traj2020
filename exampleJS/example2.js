@@ -1,6 +1,6 @@
 let rootDir ='.'
 const fs = require('fs');
-const { trajMatch } = require('../src/trajMatch.js');
+const { trajInternal } = require('../src/trajInternal.js');
 
 const snippet = require('./modelSnippet.js');
 let dataCases = [];
@@ -74,7 +74,7 @@ const pompData = {
   obsnames: dataCases_name,
 };
 
-let tm = trajMatch(currentParams[0],{object: pompData, est: [],transform: true, method: "subplex"})
+let tm = trajInternal(currentParams[0],{object: pompData, est: [],transform: true, method: "subplex"})
 
 
 
