@@ -144,11 +144,9 @@ current_params <- unlist(full_set[1,])
 coef(m1) <- c(current_params)
 
 traj.match(m1,
-
            start=current_params,
            transform=T,
-           est=c()
-) -> sets_traj
+           est=c()) -> sets_traj
 coef(sets_traj)
 logLik(sets_traj)
 end_time <- Sys.time()

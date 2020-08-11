@@ -1,22 +1,18 @@
+const { initState } = require("./initState.js");
+const { iterate_map } = require("./trajectory.js");
 
-
-exports.trajInternal = function (params, args){
+exports.trajectoryInternal = function (object, params, times, t0, asDataFrame, args){
 
 //object, params, times, t0, as_data_frame = false, _getnativesymbolinfo = true, verbose) {
-
-  let object = args.object;
-  let start = params;
-  let times = args.times;
-  let t0 = args.t0;
+  
+  // let object = args.object;
+  // let s = params;
+  // let times = args.times;
+  // let t0 = args.t0;
   let ep = 'in \"trajectory\": ';
-
-  let verbose = args.verbose ? true : false;
-  // as.data.frame <- as.logical(as.data.frame)
 
   if (times === undefined || !Array.isArray(times))
     times = object.times;
-  // else
-  //   times <- as.numeric(times)
 
   if (!Array.isArray(times) || times.length == 0)
     throw new Error(ep + '\"times\" is empty, there is no work to do');
@@ -36,41 +32,37 @@ exports.trajInternal = function (params, args){
   ntimes = times.length;
 
   if (params === undefined) params = object.params;
-  // if (is.list(params)) params <- unlist(params)
+  
   if (Object.keys(params).length === 0) 
     throw new Error(ep + '\"params\" must be supplied');
-  // storage.mode(params) <- "double"
+  
 
   // params <- as.matrix(params)
   // nrep <- ncol(params)
-  paramnames =Object.keys(params);
+  let paramnames =Object.keys(params);
   if (paramnames.length <= 0)
     throw new Error(ep + '\"params\" must have rownames');
 
-  x0 = init.state(object,params=params,t0=t0)
-  // nvar <- nrow(x0)
+  let x0 = initState(object, params);
+  let nvar = x0[0].length;
   // statenames <- rownames(x0)
   // dim(x0) <- c(nvar,nrep,1)
   // dimnames(x0) <- list(statenames,NULL,NULL)
 
-  // type <- object@skeleton.type          # map or vectorfield?
+  let type = object.skeleton.type;          // map or vectorfield?
 
-  // pompLoad(object,verbose=verbose)
-  // on.exit(pompUnload(object,verbose=verbose))
+  let x;
+  if (type === "map") {
 
-  // if (type=="map") {
+    try {
+      x = iterate_map(object, times, t0, x0, params);
+    } catch (error) {
+      throw new Error(` ${ep} in map iterator: ${error}`)
+    }
+      
 
-  //   x <- tryCatch(
-  //     .Call(iterate_map,object,times,t0,x0,params,.getnativesymbolinfo),
-  //     error = function (e) {
-  //       stop(ep,"in map iterator: ",
-  //         conditionMessage(e),call.=FALSE)
-  //     }
-  //   )
-  //   .getnativesymbolinfo <- FALSE
-
-  // } else if (type=="vectorfield") {
-
+  } else if (type=="vectorfield") {
+    throw new Error("vectorfield is not translated.")
   //   znames <- object@zeronames
   //   if (length(znames)>0) x0[znames,,] <- 0
 
@@ -101,7 +93,7 @@ exports.trajInternal = function (params, args){
 
   //   if (verbose) {
   //     deSolve::diagnostics(X)
-  //   }
+    // }
 
   //   x <- array(data=t(X[-1L,-1L]),dim=c(nvar,nrep,ntimes),
   //     dimnames=list(statenames,NULL,NULL))
@@ -110,11 +102,12 @@ exports.trajInternal = function (params, args){
   //     for (r in seq_len(ncol(x)))
   //       x[z,r,-1] <- diff(x[z,r,])
 
-  // } else {
+  } else {
 
-  //   stop(ep,"deterministic skeleton has not been properly specified",call.=FALSE)
+    throw new Erro(`${ep} deterministic skeleton has not been properly specified`);
+    return;
 
-  // }
+  }
 
   // dimnames(x) <- setNames(dimnames(x),c("variable","rep","time"))
 

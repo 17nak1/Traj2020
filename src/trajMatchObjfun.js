@@ -23,7 +23,7 @@ const tmofInternal = function (object, params, est, transform, args) {
   // if ((!is.numeric(params))||(is.null(names(params))))
   //   throw new Error(ep+ "'params' must be a named numeric vector");
   if (transform) {
-    params = partrans(object, [params], dir = "toEstimationScale")[0];
+    params = partrans(object, params, dir = "toEstimationScale")[0];
   }
     
   // it does match(est,names(params))??? Maybe replace by object later
@@ -45,7 +45,7 @@ const tmofInternal = function (object, params, est, transform, args) {
       }
     } 
     
-    if (transform) tparams = partrans(object, [params], dir="fromEstimationScale")[0];
+    if (transform) tparams = partrans(object, [params], dir="fromEstimationScale");
     
     let x=trajectory(
       object,

@@ -30,7 +30,7 @@ exports.trajMatch = function (params, args) {
     params=start,
     est=est,
     transform=transform);
-    console.log(objfun([]))
+    // console.log(objfun([]))
   let m = minimInternal(
     objfun,
     start,
@@ -53,10 +53,10 @@ exports.trajMatch = function (params, args) {
     object,
     transform: transform,
     est: est,
-    value: -m.value,
-    evals: m.evals,
-    convergence: m.convergence,
-    msg: m.msg
+    value: -m.fx,
+    // evals: m.evals,
+    // convergence: m.convergence,
+    // msg: m.msg
   }
 }
 

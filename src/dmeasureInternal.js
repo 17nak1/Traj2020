@@ -19,7 +19,7 @@
  */
 exports.dmeasureInternal  = function (object, y, x, times, params, give_log) {
   ntimes = Array.isArray(times) ? times.length : 1;
-  if (!times || ntimes < 1)
+  if (ntimes < 1)
     throw new Error("In 'dmeasureInternal': times is not defined");
   
   let nrepsx = x.length; //Np
@@ -31,13 +31,22 @@ exports.dmeasureInternal  = function (object, y, x, times, params, give_log) {
     throw new Error("in 'dmeasureInternal': larger number of replicates is not a multiple of smaller"); 
 
   let ff = object.dmeasure;
-  let F = new Array(nreps);
-
-  for (k = 0; k < ntimes; k++) { // loop over times.Note:Only ntimes = 1 in the translation
+  let F;
+  if(ntimes > 1) {
+    F = new Array(ntimes);
+    for (k = 0; k < ntimes; k++) { // loop over times.Note:Used in trajMatch
+      F[k] = ff(y[k], x[k], params[0],give_log);
+    }
+    
+  } else {
+    // ntimes = 1; Note:Used in pfilter and mif2
+    F = new Array(nreps);
     for (let j = 0; j < nreps; j++) { // loop over replicates
       if (nrepsp === 1) params[j] = params[0];
       F[j] = ff(y, x[j], params[j],give_log);
     }
+
   }
+
   return F;
 }
