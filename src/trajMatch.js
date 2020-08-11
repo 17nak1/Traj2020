@@ -1,6 +1,6 @@
 
 const { coef } = require("./helpers");
-// const { trajectory } = require("trajectory");
+const { trajectory } = require("./trajectory.js");
 const snippet = require("../exampleJS/modelSnippet.js");
 const { minimInternal } = require("./minimInternal.js");
 const { trajMatchObjfun } = require("./trajMatchObjfun.js");
@@ -30,7 +30,7 @@ exports.trajMatch = function (params, args) {
     params=start,
     est=est,
     transform=transform);
-
+    console.log(objfun([]))
   let m = minimInternal(
     objfun,
     start,

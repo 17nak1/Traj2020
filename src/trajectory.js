@@ -1,0 +1,1 @@
+exports.trajectory = function(){return {S:1, E:0, I:0, R:0, H:0}}

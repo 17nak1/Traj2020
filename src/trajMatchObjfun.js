@@ -1,4 +1,5 @@
 const { coef, partrans } = require("./helpers");
+const { trajectory } = require("./trajectory.js");
 
 exports.trajMatchObjfun  = function (object, params, est, transform = false, args) {
   return tmofInternal(
@@ -24,7 +25,7 @@ const tmofInternal = function (object, params, est, transform, args) {
     params = partrans(object, [params], dir = "toEstimationScale")[0];
   }
     
-  // it does match(est,names(params))
+  // it does match(est,names(params))??? Maybe replace by object later
   let parEstIdx = []; 
   for (let i = 0; i < est.length; i++) {
     for (let j = 0; j < Object.keys(params).length; j++) {
@@ -37,9 +38,21 @@ const tmofInternal = function (object, params, est, transform, args) {
 
   return  (par) => {
     let d;
-    params[parEstIdx] = par
+    if (parEstIdx.length > 0) {
+      for (let i = 0; i < parEstIdx.length; i++) {
+        params[parEstIdx[i]] = par[i];
+      }
+    } 
+    
     if (transform) tparams = partrans(object, [params], dir="fromEstimationScale")[0];
-    d = snippet.dmeasure(
+    x=trajectory(
+      object,
+      params = transform? tparams : params,
+      args
+    )
+    let d = [];
+    
+    d = snippet.dmeasureInternal(
       object,
       y=object.data,
       x=trajectory(

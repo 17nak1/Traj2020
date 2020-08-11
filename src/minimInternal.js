@@ -1,11 +1,10 @@
 const { partrans } = require("./helpers");
 const subplex = require("../subplex/run.js");
-const { trajMatchObjfun } = require("./trajMatchObjfun.js");
 
 exports.minimInternal = function(objfun, start, est, object, method, transform,
   lower = null, upper = null, lb = lower, ub = upper, args)
 {
-
+  
   let ep = "In minimInternal:";
   if (Object.keys(start).length < 1)
     throw new Error(ep +"start must be supplied")
@@ -22,10 +21,11 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
 
   let val;
   if (est.length === 0) {
-    val = trajMatchObjfun(object=object, params=start, est=guess, transform=transform)
-    conv = NA
+    
+    val = objfun(guess)
+    conv = NaN;
     evals = [1,0];
-    msg = "no optimization performed"
+    msg = "no optimization performed";
 
   } else {
 
@@ -68,7 +68,7 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
     transform : transform,
     value : val,
     convergence : parseInt(conv),
-    evals : parseInt(evals),
+    evals : evals,
     msg : msg
   }
 }
