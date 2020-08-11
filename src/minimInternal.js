@@ -1,9 +1,9 @@
 const { partrans } = require("./helpers");
 const subplex = require("../subplex/run.js");
-const { tmofInternal } = require("./tmofInternal.js");
+const { trajMatchObjfun } = require("./trajMatchObjfun.js");
 
 exports.minimInternal = function(objfun, start, est, object, method, transform,
-  lower = null, upper = null, lb = lower, ub = upper)
+  lower = null, upper = null, lb = lower, ub = upper, args)
 {
 
   let ep = "In minimInternal:";
@@ -11,28 +11,25 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
     throw new Error(ep +"start must be supplied")
   let guess = {};
   if (transform) {
-    start = partrans(object,start,dir="toEstimationScale")
-    // if (is.null(names(start))||(!all(est%in%names(start))))
-    //   throw new Error("est")," must refer to parameters named in ",
-    //     sQuote("partrans(object,start,dir=\"toEstimationScale\")"),call.=FALSE)
-    if (est.length > 0) guess = start.slice(...est)
+    start = partrans(object,[start],dir="toEstimationScale")[0]
+    if (Object.keys(start).some(a => {a === null}))//||(!all(est%in%names(start)))
+      throw new Error("'est' must refer to parameters named in partrans(object,start,dir=toEstimationScale")
   } else {
-    // if (is.null(names(start))||(!all(est%in%names(start))))
-    //   throw new Error("est")," must refer to parameters named in ",
-    //     sQuote("start"),call.=FALSE)
-    if (est.length > 0) guess = start.slice(...est);
+    if (Object.keys(start).some(a => {a === null}))// ||(!all(est%in%names(start)))
+      throw new Error("'est' must refer to parameters named in start.")
   }
+  if (est.length > 0) guess = start.slice(...est);
+
   let val;
   if (est.length === 0) {
-
-    val = tmofInternal(guess)
+    val = trajMatchObjfun(object=object, params=start, est=guess, transform=transform)
     conv = NA
     evals = [1,0];
     msg = "no optimization performed"
 
   } else {
 
-    // opts <- list(...)
+    let opts = args
 
     if (method == 'subplex') {
       opt = subplex(par=guess,fn=objfun,control=opts)
@@ -63,7 +60,7 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
     // }
   }
 
-  if (transform) start = partrans(object, start, dir = "fromEstimationScale");
+  if (transform) start = partrans(object, [start], dir = "fromEstimationScale")[0];
 
   return {
     params : start,

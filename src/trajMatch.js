@@ -1,9 +1,9 @@
 
-const { coef, partrans } = require("./helpers");
+const { coef } = require("./helpers");
 // const { trajectory } = require("trajectory");
 const snippet = require("../exampleJS/modelSnippet.js");
 const { minimInternal } = require("./minimInternal.js");
-const { tmofInternal } = require("./tmofInternal.js");
+const { trajMatchObjfun } = require("./trajMatchObjfun.js");
 const pomp = require("./pomp.js");
 
 exports.trajMatch = function (params, args) {
@@ -58,13 +58,5 @@ exports.trajMatch = function (params, args) {
   }
 }
 
-const trajMatchObjfun  = function (object, params, est, transform = false, args) {
-  return tmofInternal(
-    object=object,
-    params=params,
-    est=est,
-    transform=transform,
-    args
-  )
-}
+
 

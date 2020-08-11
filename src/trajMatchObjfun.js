@@ -1,4 +1,16 @@
-exports.tmofInternal = function (object, params, est, transform, args) {
+const { coef, partrans } = require("./helpers");
+
+exports.trajMatchObjfun  = function (object, params, est, transform = false, args) {
+  return tmofInternal(
+    object=object,
+    params=params,
+    est=est,
+    transform=transform,
+    args
+  )
+}
+
+const tmofInternal = function (object, params, est, transform, args) {
 
   ep = "in traj.match.objfun : "
   
@@ -9,7 +21,7 @@ exports.tmofInternal = function (object, params, est, transform, args) {
   // if ((!is.numeric(params))||(is.null(names(params))))
   //   throw new Error(ep+ "'params' must be a named numeric vector");
   if (transform) {
-    params = partrans(object, params, dir = "toEstimationScale");
+    params = partrans(object, [params], dir = "toEstimationScale")[0];
   }
     
   // it does match(est,names(params))
@@ -26,7 +38,7 @@ exports.tmofInternal = function (object, params, est, transform, args) {
   return  (par) => {
     let d;
     params[parEstIdx] = par
-    if (transform) tparams = partrans(object,params,dir="fromEstimationScale")
+    if (transform) tparams = partrans(object, [params], dir="fromEstimationScale")[0];
     d = snippet.dmeasure(
       object,
       y=object.data,

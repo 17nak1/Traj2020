@@ -109,11 +109,10 @@ statenames <- c("S","E","I","R","H")
 
 zeronames <- c("H")
 #########################################            data
-#setwd("~/Git/Trajectory-matching/2020")
-#cureentfolder <-"~/Git/Trajectory-matching/2020"
+
 London_BiData <- read.csv(file.path("London_BiData.csv"))
 London_covar <- read.csv(file.path("London_covar.csv"))
-# covart <- covariate_table(London_covar,times="time")
+
 #########################################       make pomp
 pomp(
   data = London_BiData,

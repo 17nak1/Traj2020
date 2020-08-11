@@ -1,5 +1,6 @@
 let rootDir ='.'
 const fs = require('fs');
+const { trajMatch } = require('../src/trajMatch.js');
 
 const snippet = require('./modelSnippet.js');
 let dataCases = [];
@@ -10,7 +11,7 @@ let currentParams = [];
 
 // 1st data set; read all rows and delete last one if it is ['']
 let temp, file;
-file = fs.readFileSync(rootDir+'/../London_covar.csv').toString();
+file = fs.readFileSync(rootDir+'/data/London_covar.csv').toString();
 let lines = file.split(/\r\n|\n/);
 let dataCovar_name = lines[0].replace(/['"]+/g, '').split(',');
 dataCovar_name.shift();
@@ -25,7 +26,7 @@ for (let i = 1; i < lines.length; i++) {
 
 //* 2nd data set
 let data;
-file = fs.readFileSync(rootDir+'/../London_covar.csv').toString()
+file = fs.readFileSync(rootDir+'/data/London_covar.csv').toString()
 lines = file.split(/\r\n|\n/);
 let dataCases_name = lines[0].replace(/['"]+/g, '').split(',');
 dataCases_name.shift();
@@ -43,7 +44,7 @@ for (let i = 1; i < lines.length ; i++) {
 }
 
 //* 3nd data set and names
-file = fs.readFileSync(rootDir+'/../ParamSet_DeterministicSEIR_run28.csv').toString()
+file = fs.readFileSync(rootDir+'/data/ParamSet_DeterministicSEIR_run28.csv').toString()
 lines = file.split(/\r\n|\n/);
 let currentParams_name = lines[0].replace(/['"]+/g, '').split(',');
 for (let i = 1; i < lines.length ; i++) {
@@ -62,7 +63,7 @@ console.log(currentParams)
 const pompData = {
   data :  dataCases,
   times:  dataCasesTimes,
-  t0: 0,
+  t0: 1940,
   skeletonDetail:  { type:"map", deltaT: 1/365 },
   covar: dataCovar,
   tcovar: dataCovarTimes,
@@ -73,7 +74,7 @@ const pompData = {
   obsnames: dataCases_name,
 };
 
-let tm = trajMatch()
+let tm = trajMatch(currentParams[0],{object: pompData, est: [],transform: true, method: "subplex"})
 
 
 
