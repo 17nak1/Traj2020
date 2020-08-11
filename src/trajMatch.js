@@ -17,6 +17,8 @@ exports.trajMatch = function (params, args) {
     skeleton: snippet.skeleton,
     dmeasure: snippet.dmeasure,
     initializer: snippet.initializer,
+    toEstimationScale: snippet.toEstimationScale,
+    fromEstimationScale: snippet.fromEstimationScale,
   });
     
   object = new pomp(pompData);
