@@ -18,7 +18,7 @@
  *  Array of 'Np' liklihood values at time t_n.
  */
 exports.dmeasureInternal  = function (object, y, x, times, params, give_log) {
-  ntimes = Array.isArray(times) ? length(times) : 1;
+  ntimes = Array.isArray(times) ? times.length : 1;
   if (!times || ntimes < 1)
     throw new Error("In 'dmeasureInternal': times is not defined");
   

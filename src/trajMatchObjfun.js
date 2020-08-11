@@ -1,5 +1,6 @@
 const { coef, partrans } = require("./helpers");
 const { trajectory } = require("./trajectory.js");
+const { dmeasureInternal } = require("./dmeasureInternal.js");
 
 exports.trajMatchObjfun  = function (object, params, est, transform = false, args) {
   return tmofInternal(
@@ -45,21 +46,16 @@ const tmofInternal = function (object, params, est, transform, args) {
     } 
     
     if (transform) tparams = partrans(object, [params], dir="fromEstimationScale")[0];
-    x=trajectory(
+    
+    let x=trajectory(
       object,
       params = transform? tparams : params,
       args
     )
-    let d = [];
-    
-    d = snippet.dmeasureInternal(
+    d = dmeasureInternal(
       object,
       y=object.data,
-      x=trajectory(
-        object,
-        params = transform? tparams : params,
-        args
-      ),
+      x,
       times = object.times,
       params = transform? tparams : params,
       log = true

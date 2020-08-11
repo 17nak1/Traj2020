@@ -26,7 +26,7 @@ for (let i = 1; i < lines.length; i++) {
 
 //* 2nd data set
 let data;
-file = fs.readFileSync(rootDir+'/data/London_covar.csv').toString()
+file = fs.readFileSync(rootDir+'/data/London_BiData.csv').toString()
 lines = file.split(/\r\n|\n/);
 let dataCases_name = lines[0].replace(/['"]+/g, '').split(',');
 dataCases_name.shift();
@@ -74,7 +74,7 @@ const pompData = {
   obsnames: dataCases_name,
 };
 
-let tm = trajMatch(currentParams[0],{object: pompData, est: [],transform: true, method: "subplex"})
+let tm = trajMatch(currentParams[0],{object: pompData, est: ["R0"],transform: true, method: "subplex"})
 
 
 
