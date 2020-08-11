@@ -63,10 +63,10 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
 
     } else {
 
-      val <- opt$value
-      start[est] <- unname(opt$par)
-      conv <- opt$convergence
-      evals <- opt$counts
+      // val = opt.value;
+      // start[est] = unname(opt$par);
+      // conv = opt.convergence;
+      // evals = opt.counts;
 
     }
   }
@@ -76,10 +76,10 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
   return {
     params : start,
     est : est,
-    transform : transform,
-    value : val,
-    convergence : parseInt(conv),
-    evals : evals,
-    msg : msg
+    // transform : transform,
+    // value : val,
+    // convergence : parseInt(conv),
+    // evals : evals,
+    // msg : msg
   }
 }
