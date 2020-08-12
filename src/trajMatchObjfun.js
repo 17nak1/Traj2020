@@ -1,5 +1,4 @@
 const { coef, partrans } = require("./helpers");
-const { trajectory } = require("./trajectoryInternal.js");
 const { dmeasureInternal } = require("./dmeasureInternal.js");
 
 exports.trajMatchObjfun  = function (object, params, est, transform = false, args) {

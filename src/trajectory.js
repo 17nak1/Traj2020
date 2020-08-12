@@ -34,6 +34,8 @@
 // }
 
 
+const { trajMatchObjfun } = require("./trajMatchObjfun.js");
+
 exports.iterateMap = function (object, times, t0, x0, params) {
   // let fn;
   // let X;
@@ -42,9 +44,9 @@ exports.iterateMap = function (object, times, t0, x0, params) {
   // let *zidx = 0;
 
   let deltat = object.skeletonDetail.deltaT;
-  let t = object.t0;
+  let t = t0;
 
-  let nvars = x0[0].length;
+  let nvars = Object.keys(x0[0]).length;
   let nreps = x0.length;
 
   let npars = params[0].length;
@@ -56,22 +58,22 @@ exports.iterateMap = function (object, times, t0, x0, params) {
   let ntimes = times.length;
 
   let Snames = Object.keys(x0[0]);
-  let Pnames = Object.keys(params[0]);
+  let Pnames = Object.keys(params[0][0]);
   let Cnames = object.covarnames;
 
   // // set up the covariate table
   // // covariate_table = make_covariate_table(object,&ncovars);
 
-  // // extract user-defined function
-  // PROTECT(pompfun = GET_SLOT(object,install("skeleton"))); nprotect++;
+  // extract user-defined function
+   pompfun = trajMatchObjfun;
   // PROTECT(fn = pomp_fun_handler(pompfun,gnsi,&mode)); nprotect++;
 
   // // extract 'userdata' as pairlist
   // PROTECT(args = VectorToPairList(GET_SLOT(object,install("userdata")))); nprotect++;
 
-  // // get names and indices of accumulator variables
-  // let zeronames = object.zeronames;
-  // let nzeros = zeronames.length;
+  // get names and indices of accumulator variables
+  let zeronames = object.zeronames;
+  let nzeros = zeronames.length;
   // if (nzeros > 0) {
   //   zidx = INTEGER(PROTECT(matchnames(Snames,zeronames,"state variables"))); nprotect++;
   // }
@@ -82,7 +84,7 @@ exports.iterateMap = function (object, times, t0, x0, params) {
   //   PROTECT(X = makearray(3,dim)); nprotect++;
   //   setrownames(X,Snames,3);
   // }
-  // // let X = new Array();
+  let X = new Array(ntimes).fill(x0);
   // // set up the computations
   
   // // int *sidx, *pidx, *cidx;
@@ -93,11 +95,14 @@ exports.iterateMap = function (object, times, t0, x0, params) {
   // pidx = INTEGER(PROTECT(name_index(Pnames,pompfun,"paramnames","parameters"))); nprotect++;
   // cidx = INTEGER(PROTECT(name_index(Cnames,pompfun,"covarnames","covariates"))); nprotect++;
 
-  // iterate_map_native(X, times, params, deltat, t, x0, ntimes, nvars, npars, ncovars, nzeros, nreps,
-  //   sidx, pidx, cidx, zidx, &covariate_table, ff, args);
+  iterate_map_native(X, times, params, deltat, t, x0, ntimes);
 
 
   // UNPROTECT(nprotect);
-  // return X;
+  return X;
 }
+
+let iterate_map_native = function(X, times, params, deltat, t, x0, ntimes){
+
+  }
 
