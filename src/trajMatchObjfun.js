@@ -40,7 +40,7 @@ const tmofInternal = function (object, params, est, transform, args) {
     let d;
     if (parEstIdx.length > 0) {
       for (let i = 0; i < parEstIdx.length; i++) {
-        params[parEstIdx[i]] = par[i];
+        params[Object.keys(params)[parEstIdx[i]]]= par[Object.keys(params)[parEstIdx[i]]];
       }
     } 
     
