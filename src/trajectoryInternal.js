@@ -1,14 +1,8 @@
 const { initState } = require("./initState.js");
 const { iterate_map } = require("./trajectory.js");
 
-exports.trajectoryInternal = function (object, params, times, t0, asDataFrame, args){
+exports.trajectory = function (object, params, times, t0, asDataFrame, args){
 
-//object, params, times, t0, as_data_frame = false, _getnativesymbolinfo = true, verbose) {
-  
-  // let object = args.object;
-  // let s = params;
-  // let times = args.times;
-  // let t0 = args.t0;
   let ep = 'in \"trajectory\": ';
 
   if (times === undefined || !Array.isArray(times))
@@ -23,13 +17,11 @@ exports.trajectoryInternal = function (object, params, times, t0, asDataFrame, a
 
   if (t0 === undefined)
     t0 = object.t0;
-  // else
-  //   t0 <- as.numeric(t0)
 
   if (t0 > times[0])  
     throw new Error(ep + '\"times\" the zero-time \"t0\"  must occur no later than the first observation');
 
-  ntimes = times.length;
+  let ntimes = times.length;
 
   if (params === undefined) params = object.params;
   
@@ -37,19 +29,19 @@ exports.trajectoryInternal = function (object, params, times, t0, asDataFrame, a
     throw new Error(ep + '\"params\" must be supplied');
   
 
-  // params <- as.matrix(params)
-  // nrep <- ncol(params)
-  let paramnames =Object.keys(params);
+  params = [params]//as.matrix(params)
+  let nrep = params.length;
+  let paramnames = Object.keys(params[0]);
   if (paramnames.length <= 0)
     throw new Error(ep + '\"params\" must have rownames');
 
   let x0 = initState(object, params);
   let nvar = x0[0].length;
-  // statenames <- rownames(x0)
+  statenames = Object.keys(x0[0]);
   // dim(x0) <- c(nvar,nrep,1)
   // dimnames(x0) <- list(statenames,NULL,NULL)
 
-  let type = object.skeleton.type;          // map or vectorfield?
+  let type = object.skeletonDetail.type;          // map or vectorfield?
 
   let x;
   if (type === "map") {

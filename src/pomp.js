@@ -15,6 +15,7 @@ let pomp = class Pomp {
       this.dmeasure = args.dmeasure || {};
       this.measurement_model = args.measurement_model || {};
       this.skeleton = args.skeleton || {};
+      this.skeletonDetail = args.skeletonDetail || {};
       this.initializer = args.initializer || {};
       this.rprior = args.rprior || {};
       this.dprior = args.dprior || {};

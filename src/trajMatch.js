@@ -1,6 +1,6 @@
 
 const { coef } = require("./helpers");
-const { trajectory } = require("./trajectory.js");
+const { trajectory } = require("./trajectoryInternal.js");
 const snippet = require("../exampleJS/modelSnippet.js");
 const { minimInternal } = require("./minimInternal.js");
 const { trajMatchObjfun } = require("./trajMatchObjfun.js");
@@ -13,12 +13,13 @@ exports.trajMatch = function (params, args) {
   let method = args.method? args.method : c("Nelder-Mead","subplex","SANN","BFGS", "sannbox","nloptr");
   let transform = args.transform ? args.transform: false;
 
-  const pompData = Object.assign(args.object,{
+  const pompData = Object.assign(object,{
     skeleton: snippet.skeleton,
     dmeasure: snippet.dmeasure,
     initializer: snippet.initializer,
     toEstimationScale: snippet.toEstimationScale,
     fromEstimationScale: snippet.fromEstimationScale,
+    params: start
   });
     
   object = new pomp(pompData);
