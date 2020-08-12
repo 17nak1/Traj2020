@@ -26,7 +26,7 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
   let val;
   if (est.length === 0) {
     
-    val = objfun(guess)
+    val = objfun(guess)// all woks up to here;need trajectory to test
     conv = NaN;
     evals = [1,0];
     msg = "no optimization performed";
