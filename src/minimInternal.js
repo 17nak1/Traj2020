@@ -1,6 +1,5 @@
 const { partrans } = require("./helpers");
 const subplex = require('../subplex/subplex.js');
-const { trajectory } = require("./trajectoryInternal.js");
 
 exports.minimInternal = function(objfun, start, est, object, method, transform,
   lower = null, upper = null, lb = lower, ub = upper, args)

@@ -1,6 +1,6 @@
 
 const { coef } = require("./helpers");
-trajectory = require("./trajectoryInternal.js").trajectory;
+const { trajectory } = require("./trajectoryInternal.js");
 const snippet = require("../exampleJS/modelSnippet.js");
 const { minimInternal } = require("./minimInternal.js");
 const { trajMatchObjfun } = require("./trajMatchObjfun.js");

@@ -33,9 +33,6 @@
 //   unset_pomp_userdata();
 // }
 
-
-const { trajMatchObjfun } = require("./trajMatchObjfun.js");
-
 exports.iterateMap = function (object, times, t0, x0, params) {
   // let fn;
   // let X;
@@ -65,7 +62,7 @@ exports.iterateMap = function (object, times, t0, x0, params) {
   // // covariate_table = make_covariate_table(object,&ncovars);
 
   // extract user-defined function
-   pompfun = trajMatchObjfun;
+  //pompfun = trajMatchObjfun;
   // PROTECT(fn = pomp_fun_handler(pompfun,gnsi,&mode)); nprotect++;
 
   // // extract 'userdata' as pairlist
