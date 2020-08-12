@@ -1,5 +1,5 @@
 const { initState } = require("./initState.js");
-const { iterate_map } = require("./trajectory.js");
+const { iterateMap } = require("./trajectory.js");
 
 exports.trajectory = function (object, params, times, t0, asDataFrame, args){
 
@@ -46,11 +46,11 @@ exports.trajectory = function (object, params, times, t0, asDataFrame, args){
   let x;
   if (type === "map") {
 
-    try {
-      x = iterate_map(object, times, t0, x0, params);
-    } catch (error) {
-      throw new Error(` ${ep} in map iterator: ${error}`)
-    }
+    // try {
+      x = iterateMap(object, times, t0, x0, params);
+    // } catch (error) {
+    //   throw new Error(` ${ep} in map iterator: ${error}`)
+    // }
       
 
   } else if (type=="vectorfield") {
