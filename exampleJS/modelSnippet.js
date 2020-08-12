@@ -2,7 +2,7 @@
 snippet = {}
 let mathLib = require('./mathLib')
 
-snippet.skeleton = function (states, params, covar) {
+snippet.skeleton = function (states, params, t, dt, covar) {
   let seas, dy = {};
   
   let beta0 = params.R0 * (params.gamma + params.mu) * (params.sigma + params.mu) / params.sigma;
@@ -16,8 +16,8 @@ snippet.skeleton = function (states, params, covar) {
   }
   let Beta = beta0 * seas / covar.pop
   dy.S = covar.birthrate * (1 - va) - Beta * states.S * states.I - params.mu * states.S
-  dy.E = Beta * states.S * states.I - (params.sigma + params.mu) * E
-  dy.I = params.gamma * states.I - params.mu * R + covar.birthrate * va
+  dy.E = Beta * states.S * states.I - (params.sigma + params.mu) * states.E
+  dy.I = params.gamma * states.I - params.mu * states.R + covar.birthrate * va
   dy.R = params.sigma * states.E - (params.gamma + params.mu) * states.I
   dy.H = params.gamma * states.I
   return dy;
