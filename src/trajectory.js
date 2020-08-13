@@ -4,34 +4,6 @@
 //   return new Array(548).fill(0).map(a => v)
 // }
 
-// const iterate_map_native =function (X, time, p, deltat, t, x,
-//    ntimes, nvars, npars, ncovars, nzeros, nreps, sidx, pidx, cidx, zidx, covar_table, ff, args)
-// {
-//   let covars = null;
-//   let nsteps;
-//   // let *Xs, *xs, *ps;
-//   // int h, i, j, k;
-//   // set_pomp_userdata(args);
-//   // if (ncovars > 0) covars = (double *) Calloc(ncovars, double);
-//   for (k = 0; k < ntimes; k++, time++, X += nvars*nreps) {
-//     R_CheckUserInterrupt();
-//     for (i = 0; i < nzeros; i++)
-//       for (j = 0, xs = &x[zidx[i]]; j < nreps; j++, xs += nvars)
-// 	*xs = 0.0;
-//     nsteps = num_map_steps(t,*time,deltat);
-//     for (h = 0; h < nsteps; h++) {
-//       table_lookup(covar_table,t,covars);
-//       for (j = 0, Xs = X, xs = x, ps = p; j < nreps; j++, Xs += nvars, xs += nvars, ps += npars) {
-// 	(*ff)(Xs,xs,ps,sidx,pidx,cidx,ncovars,covars,t);
-//       }
-//       memcpy(x,X,nvars*nreps*sizeof(double));
-//       t += deltat;
-//     }
-//     if (nsteps == 0) memcpy(X,x,nvars*nreps*sizeof(double));
-//   }
-//   if (ncovars > 0) Free(covars);
-//   unset_pomp_userdata();
-// }
 
 exports.iterateMap = function (object, times, t0, x0, params) {
   // let fn;

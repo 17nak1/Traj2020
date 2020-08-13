@@ -12,7 +12,7 @@ let T0 = 75
 let T1 = 139
 
 snippet.skeleton = function (states, params, t, covar) {
-
+  let d ={};
   let dt = 0.1;
   let SUSC = [states.S];
   let DEAD = [states.M];
@@ -41,23 +41,23 @@ snippet.skeleton = function (states, params, t, covar) {
   // let DEAD = &M;
   // let RCVD = &R;
   
-  let DSUSC = &DS;
-  let DEXPD = &DE1;
-  let DPRE = &DP1;
-  let DINFD = &DI1;
-  let DHOSP = &DH1;
-  let DCARE = &DC1;
-  let DVENT = &DV1;
-  let DDEAD = &DM;
-  let DRCVD = &DR;
+  let DSUSC = new Array(1) //&DS;
+  let DEXPD = new Array(nstageE) //&DE1;
+  let DPRE = new Array(nstageP) //&DP1;
+  let DINFD = new Array(nstageI) //&DI1;
+  let DHOSP = new Array(nstageH) //&DH1;
+  let DCARE = new Array(nstageC) //&DC1;
+  let DVENT = new Array(nstageV) //&DV1;
+  let DDEAD = new Array(1) //&DM;
+  let DRCVD = new Array(1) //&DR;
   
   
   // let EXPDQ = &EQ1;
   // let PREQ = &PQ1;
   // let INFDQ = &IQ1;
-  let DEXPDQ = &DEQ1;
-  let DPREQ = &DPQ1;
-  let DINFDQ = &DIQ1;
+  let DEXPDQ = new Array(nstageE)//&DEQ1;
+  let DPREQ = new Array(nstageP)//&DPQ1;
+  let DINFDQ =new Array(nstageI)// &DIQ1;
   
   
   // Different transmission rates
@@ -111,112 +111,112 @@ snippet.skeleton = function (states, params, t, covar) {
   }
   
   // From class S
-  double transS[2];
-  double rateS[2];
+  let transS = new Array(2);
+  let rateS = new Array(2);
   rateS[0] = lambda ;
   rateS[1] = lambdaQ;
-  double rateS_tot = rateS[0] + rateS[1];
-  double transS_tot = (1.0 - exp(- rateS_tot * dt)) * SUSC[0];
+  let rateS_tot = rateS[0] + rateS[1];
+  let transS_tot = (1 - Math.exp(- rateS_tot * dt)) * SUSC[0];
   transS[0] = rateS[0] / rateS_tot * transS_tot;
   transS[1] = rateS[1] / rateS_tot * transS_tot;
   
   // From class EQ
-  double transEQ[nstageE];
-  double rateEQ = nstageE * sigma;
-  for (i = 0; i < nstageE; i++) {
-  transEQ[i] =  (1.0 - exp(- rateEQ * dt))* EXPDQ[i];
+  let transEQ = new Array(nstageE);
+  let rateEQ = nstageE * sigma;
+  for (let i = 0; i < nstageE; i++) {
+    transEQ[i] =  (1 - Math.exp(- rateEQ * dt))* EXPDQ[i];
   }
   
   // From class PQ
-  double transPQ[nstageP+1];
-  double ratePQ = nstageP * kappa;
-  for (i = 0; i < nstageP-1; i++) {
-  transPQ[i] =  (1.0 - exp(- ratePQ * dt))* PREQ[i];
+  let transPQ = new Array(nstageP + 1);
+  let ratePQ = nstageP * kappa;
+  for (let i = 0; i < nstageP-1; i++) {
+    transPQ[i] =  (1 - Math.exp(- ratePQ * dt))* PREQ[i];
   }
-  double transPQIQH;
-  transPQIQH = (1.0 - exp(- ratePQ * dt))* PREQ[nstageP-1];
-  transPQ[nstageP-1] = (1-qP) * transPQIQH;
-  transPQ[nstageP] = qP * transPQIQH;
+  let transPQIQH;
+  transPQIQH = (1 - Math.exp(- ratePQ * dt))* PREQ[nstageP-1];
+  transPQ[nstageP-1] = (1-params.qP) * transPQIQH;
+  transPQ[nstageP] = params.qP * transPQIQH;
   
   // From class IQ
-  double transIQ[nstageI+1];
-  double rateIQ = nstageI * gammaI;
-  for (i = 0; i < nstageI-1; i++) {
-  transIQ[i] =  (1.0 - exp(- rateIQ * dt))* INFDQ[i];
+  let transIQ = new Array(nstageI + 1);
+  let rateIQ = nstageI * gammaI;
+  for (let i = 0; i < nstageI-1; i++) {
+    transIQ[i] =  (1 - Math.exp(- rateIQ * dt))* INFDQ[i];
   }
-  double transIQRD;
-  transIQRD = (1.0 - exp(- rateIQ * dt))* INFDQ[nstageI-1];
-  transIQ[nstageI-1] = (1-mI) * transIQRD;
-  transIQ[nstageI] = mI * transIQRD;
+  let transIQRD;
+  transIQRD = (1 - Math.exp(- rateIQ * dt))* INFDQ[nstageI-1];
+  transIQ[nstageI-1] = (1 - params.mI) * transIQRD;
+  transIQ[nstageI] = params.mI * transIQRD;
   
   
   // From class E
-  double transE[nstageE];
-  double rateE = nstageE * sigma;
-  for (i = 0; i < nstageE; i++) {
-  transE[i] =  (1.0 - exp(- rateE * dt))* EXPD[i];
+  let transE = new Array(nstageE);
+  let rateE = nstageE * sigma;
+  for (let i = 0; i < nstageE; i++) {
+    transE[i] =  (1 - Math.exp(- rateE * dt))* Math.EXPD[i];
   }
   
   // From class P
-  double transP[nstageP+2];
-  double rateP = nstageP * kappa;
-  for (i = 0; i < nstageP-1; i++) {
-  transP[i] =  (1.0 - exp(- rateP * dt))* PRE[i];
+  let transP = new Array(nstageP + 2);
+  let rateP = nstageP * kappa;
+  for (let i = 0; i < nstageP-1; i++) {
+    transP[i] =  (1 - Math.exp(- rateP * dt))* PRE[i];
   }
-  double transPIHIQ;
-  transPIHIQ = (1.0 - exp(- rateP * dt))* PRE[nstageP-1];
-  transP[nstageP-1] = (1-PD) * (1-qP) * transPIHIQ;
-  transP[nstageP] = qP * transPIHIQ;
-  transP[nstageP+1] = PD * (1-qP) * transPIHIQ;
+  let transPIHIQ;
+  transPIHIQ = (1.0 - Math.exp(- rateP * dt))* PRE[nstageP-1];
+  transP[nstageP-1] = (1 - PD) * (1 - params.qP) * transPIHIQ;
+  transP[nstageP] = params.qP * transPIHIQ;
+  transP[nstageP+1] = PD * (1 - params.qP) * transPIHIQ;
   
   // From class I
-  double transI[nstageI+1];
-  double rateI = nstageI * gammaI;
-  for (i = 0; i < nstageI-1; i++) {
-  transI[i] =  (1.0 - exp(- rateI * dt))* INFD[i];
+  let transI = new Array(stageI + 1);
+  let rateI = nstageI * gammaI;
+  for (let i = 0; i < nstageI-1; i++) {
+    transI[i] =  (1 - Math.exp(- rateI * dt))* INFD[i];
   }
   
-  double transIRD;
-  transIRD = (1.0 - exp(- rateI * dt))* INFD[nstageI-1];
-  transI[nstageI-1] = (1-mI) * transIRD;
-  transI[nstageI] = mI * transIRD;
+  let transIRD;
+  transIRD = (1 - Math.exp(- rateI * dt))* INFD[nstageI-1];
+  transI[nstageI-1] = (1 - Math.mI) * transIRD;
+  transI[nstageI] = Math.mI * transIRD;
   
   
   // From class H
-  double transH[nstageH+1];
-  double rateH = nstageH * gammaH;
-  for (i = 0; i < nstageH-1; i++) {
-  transH[i] =  (1.0 - exp(- rateH * dt))* HOSP[i];
+  let transH = new Array(nstageH + 1);
+  let rateH = nstageH * gammaH;
+  for (let i = 0; i < nstageH-1; i++) {
+    transH[i] =  (1.0 - Math.exp(- rateH * dt))* HOSP[i];
   }
   
-  double transHRC;
-  transHRC = (1.0 - exp(- rateH * dt))* HOSP[nstageH-1];
-  transH[nstageH-1] = (1-qH) * transHRC;
-  transH[nstageH] = qH * transHRC;
+  let transHRC;
+  transHRC = (1.0 - Math.exp(- rateH * dt))* HOSP[nstageH-1];
+  transH[nstageH-1] = (1 - params.qH) * transHRC;
+  transH[nstageH] = params.qH * transHRC;
   
   
   // From class C
-  double transC[nstageC+2];
-  double rateC = nstageC * gammaC;
-  for (i = 0; i < nstageC-1; i++) {
-  transC[i] =  (1.0 - exp(- rateC * dt))* CARE[i];
+  let transC= new Array(nstageC + 2);
+  let rateC = nstageC * gammaC;
+  for (let i = 0; i < nstageC-1; i++) {
+    transC[i] =  (1.0 - Math.exp(- rateC * dt))* CARE[i];
   }
-  double transCRVM;
-  transCRVM = (1.0 - exp(- rateC * dt))* CARE[nstageC-1];
-  transC[nstageC-1] =  (1-mC) * (1-qC) * transCRVM;
-  transC[nstageC] = qC * transCRVM;
-  transC[nstageC+1] = mC * (1-qC) * transCRVM;
+  let transCRVM;
+  transCRVM = (1.0 - Math.exp(- rateC * dt))* CARE[nstageC-1];
+  transC[nstageC-1] =  (1 - params.mC) * (1 - params.qC) * transCRVM;
+  transC[nstageC] = params.qC * transCRVM;
+  transC[nstageC+1] = params.mC * (1 - params.qC) * transCRVM;
   
   // From class V
-  double transV[nstageV+1];
-  double rateV = nstageV * gammaV;
-  for (i = 0; i < nstageV-1; i++) {
-  transV[i] =  (1.0 - exp(- rateV * dt))* VENT[i];
+  let transV = new Array(nstageV + 1);
+  let rateV = nstageV * gammaV;
+  for (let i = 0; i < nstageV-1; i++) {
+    transV[i] =  (1 - Math.exp(- rateV * dt))* VENT[i];
   }
-  double transVRD;
-  transVRD = (1.0 - exp(- rateV * dt))* VENT[nstageV-1];
-  transV[nstageV-1] = (1-mV) * transVRD;
-  transV[nstageV] = mV * transVRD;
+  let transVRD;
+  transVRD = (1.0 - Math.exp(- rateV * dt))* VENT[nstageV-1];
+  transV[nstageV-1] = (1 - params.mV) * transVRD;
+  transV[nstageV] = params.mV * transVRD;
   
   // Balance the equations
   DSUSC[0] = SUSC[0];
@@ -291,7 +291,7 @@ snippet.skeleton = function (states, params, t, covar) {
   DdeathsIIQ += transI[nstageI] + transIQ[nstageI];
   DdeathsCV += transC[nstageC+1] + transV[nstageV];
 }
-
+// Note: for translating "double *SUSC = &S" we directly fill S and no need to define SUSC
 snippet.initializer = function(args, covar) {
   let initObj = {};
   
