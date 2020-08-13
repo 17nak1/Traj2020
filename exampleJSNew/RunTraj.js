@@ -2,7 +2,10 @@ let rootDir ='.'
 const fs = require('fs');
 const { trajMatch } = require('../src/trajMatch.js');
 
+const create_dataset = require('./CreateDataset.js');
+const create_covars = require('./CreateCovars.js');
 const snippet = require('./modelSnippet_DetModel3.js');
+
 let rootDirData ='./private_data';
 
 run = 1;
@@ -36,6 +39,10 @@ for (let i = 1; i < lines.length; i++) {
   }
 }
 
-select_set = [...snippet.params_mod, ...snippet.params_ic];
+select_set = [...snippet.paramsMod, ...snippet.paramsIc];
+
+// Generate covars, data and pomp object
+data = create_dataset(snippet.endTime)
+covars = create_covars(snippet.endTime)
 
 console.log('finished.');

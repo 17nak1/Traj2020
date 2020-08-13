@@ -7,9 +7,9 @@ let nstageI = 3;
 let nstageH = 3;
 let nstageC = 3;
 let nstageV = 3;
-let endTime = "2020-07-16"
-let T0 = 75
-let T1 = 139
+snippet.endTime = "2020-07-16"
+snippet.T0 = 75
+snippet.T1 = 139
 
 snippet.skeleton = function (states, params, t, covar) {
   let d ={};
