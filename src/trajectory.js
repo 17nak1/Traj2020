@@ -6,11 +6,6 @@
 
 
 exports.iterateMap = function (object, times, t0, x0, params) {
-  // let fn;
-  // let X;
-  // let pompfun;
-  // let zeronames;
-  // let *zidx = 0;
 
   let deltat = object.skeletonDetail.deltaT;
   let t = t0;
@@ -53,11 +48,11 @@ exports.iterateMap = function (object, times, t0, x0, params) {
   //   PROTECT(X = makearray(3,dim)); nprotect++;
   //   setrownames(X,Snames,3);
   // }
-  let X = [];
-  for(let i = 0; i < ntimes; i++){
-    a = [{...(x0[0])}];
-    X.push(a);
-  }
+  // let X = [];
+  // for(let i = 0; i < ntimes; i++){
+  //   a = [{...(x0[0])}];
+  //   X.push(a);
+  // }
   // // set up the computations
   
   // // int *sidx, *pidx, *cidx;
@@ -68,51 +63,51 @@ exports.iterateMap = function (object, times, t0, x0, params) {
   // pidx = INTEGER(PROTECT(name_index(Pnames,pompfun,"paramnames","parameters"))); nprotect++;
   // cidx = INTEGER(PROTECT(name_index(Cnames,pompfun,"covarnames","covariates"))); nprotect++;
 
-  iterate_map_native(X, times, params, deltat, t, x0, ff, object);
+  X = iterate_map_native(times, params, deltat, t, x0, nreps, ff, object);
 
 
   // UNPROTECT(nprotect);
   return X;
 }
 
-const iterate_map_native = function(X, times, params, deltat, t0, x0, func, object){  
-  let zeronames = object.zeronames; 
-  if (deltat <= 0)
-    throw new Error("In euler.js: 'delta.t' should be a positive number");
-  let nvars = Object.keys(X[0][0]).length;
-  let nreps = X[0].length;
-  let npars = Object.keys(params[0]).length;
-  let ntimes = times.length;
-  let t = t0;
-  let xt = X;
-  let args = object.globals;
-  for (let step = 0; step < ntimes; step++) {
+// const iterate_map_native = function(X, times, params, deltat, t0, x0, func, object){  
+//   let zeronames = object.zeronames; 
+//   if (deltat <= 0)
+//     throw new Error("In euler.js: 'delta.t' should be a positive number");
+//   let nvars = Object.keys(X[0][0]).length;
+//   let nreps = X[0].length;
+//   let npars = Object.keys(params[0]).length;
+//   let ntimes = times.length;
+//   let t = t0;
+//   let xt = X;
+//   let args = object.globals;
+//   for (let k = 0; k < ntimes; k++) {
     
-    // set accumulator variables to zero
-    for (j = 0; j < nreps; j++) {
-      for (i = 0; i < zeronames.length; i++) {
-         xt[j][0][zeronames[i]] = 0;
-      } 
-    }
-    dt = deltat;
-    nstep = numMapSteps(t, times[step], dt);      
-    for (let k = 0; k < nstep; k++) { // loop over Euler steps
-      let  interpolatorObj = object.interpolator(t);
-      for (let j = 0 ; j < nreps; j++) { // loop over replicates
-         xt[j][0] = func(xt[j][0], params[0], t, dt, interpolatorObj,args);
-      }
-      t += dt;
+//     // set accumulator variables to zero
+//     for (j = 0; j < nreps; j++) {
+//       for (i = 0; i < zeronames.length; i++) {
+//          xt[j][0][zeronames[i]] = 0;
+//       } 
+//     }
+//     dt = deltat;
+//     nstep = numMapSteps(t, times[k], dt);      
+//     for (let k = 0; k < nstep; k++) { // loop over Euler steps
+//       let  interpolatorObj = object.interpolator(t);
+//       for (let j = 0 ; j < nreps; j++) { // loop over replicates
+//          xt[k][j] = func(xt[k][j], params[0], t, dt, interpolatorObj,args);
+//       }
+//       t += dt;
 
-      if ((k == nstep-2)) { // penultimate step
-        dt = times[step] - t;
-        t = times[step] - dt;
-      }  
-    }
-  }
+//       if ((k == nstep-2)) { // penultimate step
+//         dt = times[k] - t;
+//         t = times[k] - dt;
+//       }  
+//     }
+//   }
   
-  return xt;
+//   return xt;
 
-}
+// }
 
 const numMapSteps = function (t1, t2, dt) {
   let DOUBLE_EPS = 10e-8
@@ -121,4 +116,30 @@ const numMapSteps = function (t1, t2, dt) {
   // nstep will be the number of discrete-time steps to take in going from t1 to t2.
   nstep = Math.floor((t2 - t1) / dt /(1 - tol))
   return (nstep > 0) ? nstep : 0
+}
+
+const  iterate_map_native = function (times, p, deltat, t, x, nreps, ff, object) {
+  let X = [].concat(x);
+  let ntimes = times.length;
+  for (let k = 0; k < ntimes; k++) { //loop over object.times
+  
+    for (let i = 0; i < object.zeronames.length; i++) {
+      for (j = 0; j < nreps; j++) x[j][object.zeronames[i]] = 0; // zeroStates=0 at the beginning of each time
+    }
+
+    nsteps = numMapSteps(t, times[k], deltat);
+    for (let h = 0; h < nsteps; h++) {
+      let interpolatorObj = object.interpolator(t);
+      // , Xs = X, xs = x, ps = p;
+      for (j = 0; j < nreps; j++) {
+        X[j] = ff(x[j], p[j], interpolatorObj, t);
+  // Xs += nvars, xs += nvars, ps += npars
+      }
+      x = X;// memcpy(x,X,nvars*nreps*sizeof(double));
+      t += deltat;
+    }
+    if (nsteps === 0) X = x; //memcpy(X,x,nvars*nreps*sizeof(double));
+    // time++, X += nvars*nreps
+  }
+  return X;
 }
