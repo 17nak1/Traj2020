@@ -91,7 +91,7 @@ const iterate_map_native = function(X, times, params, deltat, t0, x0, func, obje
     // set accumulator variables to zero
     for (j = 0; j < nreps; j++) {
       for (i = 0; i < zeronames.length; i++) {
-         xt[j][0][zeronames[i]] = 0;
+         xt[step][j][zeronames[i]] = 0;
       } 
     }
     dt = deltat;
@@ -99,7 +99,7 @@ const iterate_map_native = function(X, times, params, deltat, t0, x0, func, obje
     for (let k = 0; k < nstep; k++) { // loop over Euler steps
       let  interpolatorObj = object.interpolator(t);
       for (let j = 0 ; j < nreps; j++) { // loop over replicates
-         xt[j][0] = func(xt[j][0], params[0], t, dt, interpolatorObj,args);
+         xt[step][j] = func(xt[step][j], params[0], t, dt, interpolatorObj,args);
       }
       t += dt;
 
