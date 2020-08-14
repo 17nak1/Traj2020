@@ -53,7 +53,11 @@ exports.iterateMap = function (object, times, t0, x0, params) {
   //   PROTECT(X = makearray(3,dim)); nprotect++;
   //   setrownames(X,Snames,3);
   // }
-  let X = new Array(ntimes).fill(x0);
+  let X = [];
+  for(let i = 0; i < ntimes; i++){
+    a = [{...(x0[0])}];
+    X.push(a);
+  }
   // // set up the computations
   
   // // int *sidx, *pidx, *cidx;

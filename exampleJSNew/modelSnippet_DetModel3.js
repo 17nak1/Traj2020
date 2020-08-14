@@ -88,26 +88,26 @@ snippet.skeleton = function (states, params, t, dt, covar, args) {
     dQdt  = mathLib.rgammawn(params.beta_sd, dt)/dt;
     lambda = ( (lambdaI + lambdaP + params.iota) / args.pop ) * dQdt;
     lambdaQ = ( (lambdaPQ) / args.pop ) * dQdt;
-  } else if (t < T0 + 7.0) {
-    let x = (t-T0) / 7.0;
+  } else if (t < args.T0 + 7.0) {
+    let x = (t-args.T0) / 7.0;
     let ss = 3*x*x - 2*x*x*x;
-    dQdt  = mathLib.rgammawn(((1-ss) + ss*dB0)*params.beta_sd, dt)/dt;
-    lambda = ( ( ((1-ss) + ss*dI0) * lambdaI + ((1-ss) + ss*dP0) * lambdaP + ((1-ss) + ss*dT0)*params.iota ) / args.pop ) * dQdt;
-    lambdaQ = ( ( ((1-ss) + ss*dP0) * lambdaPQ  ) / args.pop ) * dQdt;
-  } else if (t < T1) {
-    dQdt  = mathLib.rgammawn(dB0*params.beta_sd, dt)/dt;
-    lambda = ( ( dI0 * lambdaI + dP0 * lambdaP + dT0 * params.iota ) / args.pop ) * dQdt;
-    lambdaQ = ( (  dP0 * lambdaPQ  ) / args.pop ) * dQdt;
-  } else if (t < T1 +7.0) {
-    let x = (t-T1) / 7.0;
+    dQdt  = mathLib.rgammawn(((1-ss) + ss*params.dB0)*params.beta_sd, dt)/dt;
+    lambda = ( ( ((1-ss) + ss*params.dI0) * lambdaI + ((1-ss) + ss*params.dP0) * lambdaP + ((1-ss) + ss*params.dT0)*params.iota ) / args.pop ) * dQdt;
+    lambdaQ = ( ( ((1-ss) + ss*params.dP0) * lambdaPQ  ) / args.pop ) * dQdt;
+  } else if (t < args.T1) {
+    dQdt  = mathLib.rgammawn(params.dB0*params.beta_sd, dt)/dt;
+    lambda = ( ( params.dI0 * lambdaI + params.dP0 * lambdaP + params.dT0 * params.iota ) / args.pop ) * dQdt;
+    lambdaQ = ( (  params.dP0 * lambdaPQ  ) / args.pop ) * dQdt;
+  } else if (t < args.T1 +7.0) {
+    let x = (t-args.T1) / 7.0;
     let ss = 3*x*x - 2*x*x*x;
-    dQdt  = mathLib.rgammawn(((1-ss)*dB0 + ss*dB1)*params.beta_sd, dt)/dt;
-    lambda = ( ( ((1-ss)*dI0 + ss*dI1) * lambdaI + ((1-ss)*dP0 + ss*dP1) * lambdaP + ((1-ss)*dT0 + ss*dT1)*params.iota ) / args.pop ) * dQdt;
-    lambdaQ = ( ( ((1-ss)*dP0 + ss*dP1) * lambdaPQ  ) / args.pop ) * dQdt;
+    dQdt  = mathLib.rgammawn(((1-ss)*params.dB0 + ss*params.dB1)*params.beta_sd, dt)/dt;
+    lambda = ( ( ((1-ss)*params.dI0 + ss*params.dI1) * lambdaI + ((1-ss)*params.dP0 + ss*params.dP1) * lambdaP + ((1-ss)*params.dT0 + ss*dT1)*params.iota ) / args.pop ) * dQdt;
+    lambdaQ = ( ( ((1-ss)*params.dP0 + ss*params.dP1) * lambdaPQ  ) / args.pop ) * dQdt;
   } else {
-    dQdt  = mathLib.rgammawn(dB1*params.beta_sd, dt)/dt;
-    lambda = ( ( dI1 * lambdaI + dP1 * lambdaP + dT1 * params.iota ) / args.pop ) * dQdt;
-    lambdaQ = ( (  dP1 * lambdaPQ  ) / args.pop ) * dQdt;
+    dQdt  = mathLib.rgammawn(params.dB1*params.beta_sd, dt)/dt;
+    lambda = ( ( params.dI1 * lambdaI + params.dP1 * lambdaP + dT1 * params.iota ) / args.pop ) * dQdt;
+    lambdaQ = ( (  params.dP1 * lambdaPQ  ) / args.pop ) * dQdt;
   }
   
   // From class S
@@ -178,8 +178,8 @@ snippet.skeleton = function (states, params, t, dt, covar, args) {
   
   let transIRD;
   transIRD = (1 - Math.exp(- rateI * dt))* INFD[args.nstageI-1];
-  transI[args.nstageI-1] = (1 - Math.mI) * transIRD;
-  transI[args.nstageI] = Math.mI * transIRD;
+  transI[args.nstageI-1] = (1 - params.mI) * transIRD;
+  transI[args.nstageI] = params.mI * transIRD;
   
   
   // From class H
@@ -228,11 +228,11 @@ snippet.skeleton = function (states, params, t, dt, covar, args) {
   for (i = 0; i < args.nstageV; i++) DVENT[i] = VENT[i];
   DDEAD[0] = DEAD[0];
   DRCVD[0] = RCVD[0];
-  DcasesI = states.casesI;
-  DcasesIQ = states.casesIQ;
-  DcasesH = states.casesH;
-  DdeathsIIQ = states.deathsIIQ;
-  DdeathsCV = states.deathsCV;
+  d.casesI = states.casesI;
+  d.casesIQ = states.casesIQ;
+  d.casesH = states.casesH;
+  d.deathsIIQ = states.deathsIIQ;
+  d.deathsCV = states.deathsCV;
   
   for (i = 0; i < args.nstageE; i++) DEXPDQ[i] = EXPDQ[i];
   for (i = 0; i < args.nstageP; i++) DPREQ[i] = PREQ[i];
@@ -285,11 +285,57 @@ snippet.skeleton = function (states, params, t, dt, covar, args) {
   DRCVD[0] += transIQ[args.nstageI-1];
   DDEAD[0] += transIQ[args.nstageI];
   
-  DcasesI += transP[args.nstageP-1];
-  DcasesIQ += transPQ[args.nstageP-1] + transP[args.nstageP+1];
-  DcasesH += transPQ[args.nstageP] + transP[args.nstageP];
-  DdeathsIIQ += transI[args.nstageI] + transIQ[args.nstageI];
-  DdeathsCV += transC[args.nstageC+1] + transV[args.nstageV];
+  d.casesI += transP[args.nstageP-1];
+  d.casesIQ += transPQ[args.nstageP-1] + transP[args.nstageP+1];
+  d.casesH += transPQ[args.nstageP] + transP[args.nstageP];
+  d.deathsIIQ += transI[args.nstageI] + transIQ[args.nstageI];
+  d.deathsCV += transC[args.nstageC+1] + transV[args.nstageV];
+
+  // TODO: result should these parameters
+  // let DSUSC = new Array(1) //&DS;
+  d['S'] = DSUSC[0];
+  // let DEXPD = new Array(args.nstageE) //&DE1;
+  d['E1'] = DEXPD[0];
+  d['E2'] = DEXPD[1];
+  d['E3'] = DEXPD[2];
+  // let DPRE = new Array(args.nstageP) //&DP1;
+  d['P1'] = DPRE[0];
+  d['P2'] = DPRE[1];
+  d['P3'] = DPRE[2];
+  // let DINFD = new Array(args.nstageI) //&DI1;
+  d['I1'] = DINFD[0];
+  d['I2'] = DINFD[1];
+  d['I3'] = DINFD[2];
+  // let DHOSP = new Array(args.nstageH) //&DH1;
+  d['H1'] = DHOSP[0];
+  d['H2'] = DHOSP[1];
+  d['H3'] = DHOSP[2];
+  // let DCARE = new Array(args.nstageC) //&DC1;
+  d['DC1'] = DCARE[0];
+  d['DC2'] = DCARE[1];
+  d['DC3'] = DCARE[2];
+  // let DVENT = new Array(args.nstageV) //&DV1;
+  d['DV1'] = DVENT[0];
+  d['DV2'] = DVENT[1];
+  d['DV3'] = DVENT[2];
+  // let DDEAD = new Array(1) //&DM;
+  d['M'] = DDEAD[0];
+  // let DRCVD = new Array(1) //&DR;
+  d['R'] = DRCVD[0];
+  // let DEXPDQ = new Array(args.nstageE)//&DEQ1;
+  d['EQ1'] = DEXPDQ[0];
+  d['EQ2'] = DEXPDQ[1];
+  d['EQ3'] = DEXPDQ[2];
+  // let DPREQ = new Array(args.nstageP)//&DPQ1;
+  d['PQ1'] = DPREQ[0];
+  d['PQ2'] = DPREQ[1];
+  d['PQ3'] = DPREQ[2];
+  // let DINFDQ =new Array(args.nstageI)// &DIQ1;
+  d['IQ1'] = DINFDQ[0];
+  d['IQ2'] = DINFDQ[1];
+  d['IQ3'] = DINFDQ[2];
+
+  return d;
 }
 // Note: for translating "double *SUSC = &S" we directly fill S and no need to define SUSC
 snippet.initializer = function(params, covar, args) {
