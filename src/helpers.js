@@ -65,7 +65,7 @@ const partrans = function (pomp, params, dir = ["fromEstimationScale","toEstimat
     break;
   } 
   
-  if (transParam.length === 1) return [...transParam];
+  if (transParam.length === 1) return transParam[0];
   return transParam;
 }
 /**

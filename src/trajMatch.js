@@ -1,7 +1,7 @@
 
 const { coef } = require("./helpers");
 const { trajectory } = require("./trajectoryInternal.js");
-const snippet = require("../exampleJS/modelSnippet.js");
+const snippet = require("../exampleJSNew/modelSnippet_DetModel3.js");
 const { minimInternal } = require("./minimInternal.js");
 const { trajMatchObjfun } = require("./trajMatchObjfun.js");
 const pomp = require("./pomp.js");

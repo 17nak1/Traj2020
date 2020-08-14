@@ -18,7 +18,7 @@ exports.iterateMap = function (object, times, t0, x0, params) {
   let nvars = Object.keys(x0[0]).length;
   let nreps = x0.length;
 
-  let npars = params[0].length;
+  let npars = Object.keys(params[0]).length;
 
   if (nreps !== params.length)
     throw new Error("in 'trajectory': dimension mismatch between 'x0' and 'params'"); // # nocov
@@ -27,7 +27,7 @@ exports.iterateMap = function (object, times, t0, x0, params) {
   let ntimes = times.length;
 
   let Snames = Object.keys(x0[0]);
-  let Pnames = Object.keys(params[0][0]);
+  let Pnames = Object.keys(params[0]);
   let Cnames = object.covarnames;
 
   // // set up the covariate table

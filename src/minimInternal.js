@@ -10,7 +10,7 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
     throw new Error(ep +"start must be supplied")
   let guess = {};
   if (transform) {
-    start = partrans(object,start,dir="toEstimationScale")[0]
+    start = partrans(object,start,dir="toEstimationScale")
     if (Object.keys(start).some(a => {a === null}))//||(!all(est%in%names(start)))
       throw new Error("'est' must refer to parameters named in partrans(object,start,dir=toEstimationScale")
   } else {
@@ -71,7 +71,7 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
     }
   }
 
-  if (transform) start = partrans(object, start, dir = "fromEstimationScale")[0];
+  if (transform) start = partrans(object, start, dir = "fromEstimationScale");
 
   return {
     params : start,

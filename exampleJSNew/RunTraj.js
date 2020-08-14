@@ -31,7 +31,7 @@ for (let i = 1; i < lines.length; i++) {
   let temp = lines[i].split(',');
   if(temp.length > 1) {
     let tempParamset =	{};
-      for(let j = 1; j < temp.length; j++){
+      for(let j = 0; j < temp.length; j++){
         tempParamset[paramsetHeader[j]] = Number(temp[j]);
       }
       paramsetData.push(tempParamset);

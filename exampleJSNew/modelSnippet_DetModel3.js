@@ -11,7 +11,7 @@ snippet.endTime = "2020-07-16"
 snippet.T0 = 75
 snippet.T1 = 139
 
-snippet.skeleton = function (states, params, t, covar) {
+snippet.skeleton = function (states, params, t, covar, args) {
   let d ={};
   let dt = 0.1;
   let SUSC = [states.S];
@@ -86,28 +86,28 @@ snippet.skeleton = function (states, params, t, covar) {
   
   if (t < T0) {
     dQdt  = mathLib.rgammawn(params.beta_sd, dt)/dt;
-    lambda = ( (lambdaI + lambdaP + params.iota) / pop ) * dQdt;
-    lambdaQ = ( (lambdaPQ) / pop ) * dQdt;
+    lambda = ( (lambdaI + lambdaP + params.iota) / args.pop ) * dQdt;
+    lambdaQ = ( (lambdaPQ) / args.pop ) * dQdt;
   } else if (t < T0 + 7.0) {
     let x = (t-T0) / 7.0;
     let ss = 3*x*x - 2*x*x*x;
     dQdt  = mathLib.rgammawn(((1-ss) + ss*dB0)*params.beta_sd, dt)/dt;
-    lambda = ( ( ((1-ss) + ss*dI0) * lambdaI + ((1-ss) + ss*dP0) * lambdaP + ((1-ss) + ss*dT0)*params.iota ) / pop ) * dQdt;
-    lambdaQ = ( ( ((1-ss) + ss*dP0) * lambdaPQ  ) / pop ) * dQdt;
+    lambda = ( ( ((1-ss) + ss*dI0) * lambdaI + ((1-ss) + ss*dP0) * lambdaP + ((1-ss) + ss*dT0)*params.iota ) / args.pop ) * dQdt;
+    lambdaQ = ( ( ((1-ss) + ss*dP0) * lambdaPQ  ) / args.pop ) * dQdt;
   } else if (t < T1) {
     dQdt  = mathLib.rgammawn(dB0*params.beta_sd, dt)/dt;
-    lambda = ( ( dI0 * lambdaI + dP0 * lambdaP + dT0 * params.iota ) / pop ) * dQdt;
-    lambdaQ = ( (  dP0 * lambdaPQ  ) / pop ) * dQdt;
+    lambda = ( ( dI0 * lambdaI + dP0 * lambdaP + dT0 * params.iota ) / args.pop ) * dQdt;
+    lambdaQ = ( (  dP0 * lambdaPQ  ) / args.pop ) * dQdt;
   } else if (t < T1 +7.0) {
     let x = (t-T1) / 7.0;
     let ss = 3*x*x - 2*x*x*x;
     dQdt  = mathLib.rgammawn(((1-ss)*dB0 + ss*dB1)*params.beta_sd, dt)/dt;
-    lambda = ( ( ((1-ss)*dI0 + ss*dI1) * lambdaI + ((1-ss)*dP0 + ss*dP1) * lambdaP + ((1-ss)*dT0 + ss*dT1)*params.iota ) / pop ) * dQdt;
-    lambdaQ = ( ( ((1-ss)*dP0 + ss*dP1) * lambdaPQ  ) / pop ) * dQdt;
+    lambda = ( ( ((1-ss)*dI0 + ss*dI1) * lambdaI + ((1-ss)*dP0 + ss*dP1) * lambdaP + ((1-ss)*dT0 + ss*dT1)*params.iota ) / args.pop ) * dQdt;
+    lambdaQ = ( ( ((1-ss)*dP0 + ss*dP1) * lambdaPQ  ) / args.pop ) * dQdt;
   } else {
     dQdt  = mathLib.rgammawn(dB1*params.beta_sd, dt)/dt;
-    lambda = ( ( dI1 * lambdaI + dP1 * lambdaP + dT1 * params.iota ) / pop ) * dQdt;
-    lambdaQ = ( (  dP1 * lambdaPQ  ) / pop ) * dQdt;
+    lambda = ( ( dI1 * lambdaI + dP1 * lambdaP + dT1 * params.iota ) / args.pop ) * dQdt;
+    lambdaQ = ( (  dP1 * lambdaPQ  ) / args.pop ) * dQdt;
   }
   
   // From class S
@@ -292,34 +292,34 @@ snippet.skeleton = function (states, params, t, covar) {
   DdeathsCV += transC[nstageC+1] + transV[nstageV];
 }
 // Note: for translating "double *SUSC = &S" we directly fill S and no need to define SUSC
-snippet.initializer = function(args, covar) {
+snippet.initializer = function(params, covar, args) {
   let initObj = {};
   
-  let fS = args.S0;
-  let fEQ = args.EQ0 / nstageE;
-  let fPQ = args.PQ0 / nstageP;
-  let fIQ = args.IQ0 / nstageI;
-  let fE = args.E0 / nstageE;
-  let fP = args.P0 / nstageP;
-  let fI = args.I0 / nstageI;
-  let fH = args.H0 / nstageH;
-  let fC = args.C0 / nstageC;
-  let fV = args.V0 / nstageV;
-  let fM = args.M0;
+  let fS = params.S0;
+  let fEQ = params.EQ0 / args.nstageE;
+  let fPQ = params.PQ0 / args.nstageP;
+  let fIQ = params.IQ0 / args.nstageI;
+  let fE = params.E0 / args.nstageE;
+  let fP = params.P0 / args.nstageP;
+  let fI = params.I0 / args.nstageI;
+  let fH = params.H0 / args.nstageH;
+  let fC = params.C0 / args.nstageC;
+  let fV = params.V0 / args.nstageV;
+  let fM = params.M0;
   let fR = 1 - fS - nstageE*fE - nstageP*fP - nstageI*fI - nstageH*fH - nstageC*fC - nstageV*fV - nstageE*fEQ - nstageP*fPQ - nstageI*fIQ - fM;
   
-  initObj["S"] = Math.round(pop*fS);
-  for (let i = 0; i < nstageE; i++) initObj[`EQ${i + 1}`] = Math.round(pop*fEQ);
-  for (let i = 0; i < nstageP; i++) initObj[`PQ${i + 1}`] = Math.round(pop*fPQ);
-  for (let i = 0; i < nstageI; i++) initObj[`IQ${i + 1}`] = Math.round(pop*fIQ);
-  for (let i = 0; i < nstageE; i++) initObj[`E${i + 1}`] = Math.round(pop*fE);
-  for (let i = 0; i < nstageP; i++) initObj[`P${i + 1}`] = Math.round(pop*fP);
-  for (let i = 0; i < nstageI; i++) initObj[`I${i + 1}`] = Math.round(pop*fI);
-  for (let i = 0; i < nstageH; i++) initObj[`H${i + 1}`] = Math.round(pop*fH);
-  for (let i = 0; i < nstageC; i++) initObj[`C${i + 1}`] = Math.round(pop*fC);
-  for (let i = 0; i < nstageV; i++) initObj[`V${i + 1}`] = Math.round(pop*fV);
-  initObj["M"] = Math.round(pop*fM);
-  initObj["R"] = Math.round(pop*fR);
+  initObj["S"] = Math.round(args.pop*fS);
+  for (let i = 0; i < nstageE; i++) initObj[`EQ${i + 1}`] = Math.round(args.pop*fEQ);
+  for (let i = 0; i < nstageP; i++) initObj[`PQ${i + 1}`] = Math.round(args.pop*fPQ);
+  for (let i = 0; i < nstageI; i++) initObj[`IQ${i + 1}`] = Math.round(args.pop*fIQ);
+  for (let i = 0; i < nstageE; i++) initObj[`E${i + 1}`] = Math.round(args.pop*fE);
+  for (let i = 0; i < nstageP; i++) initObj[`P${i + 1}`] = Math.round(args.pop*fP);
+  for (let i = 0; i < nstageI; i++) initObj[`I${i + 1}`] = Math.round(args.pop*fI);
+  for (let i = 0; i < nstageH; i++) initObj[`H${i + 1}`] = Math.round(args.pop*fH);
+  for (let i = 0; i < nstageC; i++) initObj[`C${i + 1}`] = Math.round(args.pop*fC);
+  for (let i = 0; i < nstageV; i++) initObj[`V${i + 1}`] = Math.round(args.pop*fV);
+  initObj["M"] = Math.round(args.pop*fM);
+  initObj["R"] = Math.round(args.pop*fR);
   
   initObj["casesI"] = 0;
   initObj["casesIQ"] = 0;
