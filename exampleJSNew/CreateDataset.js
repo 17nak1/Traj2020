@@ -77,7 +77,8 @@ let create_dataset = function(endTime="2020-05-04",predTime=null){
     ventilator[dataCovar[i][0] - 1] = dataCovar[i][4];
   }
   deaths = total_deaths.map( (_,i,arr) => (arr[i]) - (arr[i-1]));
-
+	deaths[0] = total_deaths[0];
+	
   let data = time.map( (x,i) => [x, reports[i], deaths[i], hospital[i], ICU[i], ventilator[i]]);
 
   for(let i = 0; i < 23 - 1; i++){

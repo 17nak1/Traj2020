@@ -47,7 +47,7 @@ let create_covars = function(endTime="2020-04-27",predTime=null){
 	tests = tests.map( (_,i,arr) => Math.ceil(arr[i] * 0.5 + arr[i+1] * 0.5));
 	tests[timeLength - 1] = tests[timeLength - 2];
 
-	data = time.map( (x,i) => [x,tests[i]]);
+	let data = time.map( (x,i) => [x,tests[i]]);
 	data.unshift(["time","tests"]);
 
 	if (predTime != null) {
