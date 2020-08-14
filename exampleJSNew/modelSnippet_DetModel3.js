@@ -102,11 +102,11 @@ snippet.skeleton = function (states, params, t, dt, covar, args) {
     let x = (t-args.T1) / 7.0;
     let ss = 3*x*x - 2*x*x*x;
     dQdt  = mathLib.rgammawn(((1-ss)*params.dB0 + ss*params.dB1)*params.beta_sd, dt)/dt;
-    lambda = ( ( ((1-ss)*params.dI0 + ss*params.dI1) * lambdaI + ((1-ss)*params.dP0 + ss*params.dP1) * lambdaP + ((1-ss)*params.dT0 + ss*dT1)*params.iota ) / args.pop ) * dQdt;
+    lambda = ( ( ((1-ss)*params.dI0 + ss*params.dI1) * lambdaI + ((1-ss)*params.dP0 + ss*params.dP1) * lambdaP + ((1-ss)*params.dT0 + ss*params.dT1)*params.iota ) / args.pop ) * dQdt;
     lambdaQ = ( ( ((1-ss)*params.dP0 + ss*params.dP1) * lambdaPQ  ) / args.pop ) * dQdt;
   } else {
     dQdt  = mathLib.rgammawn(params.dB1*params.beta_sd, dt)/dt;
-    lambda = ( ( params.dI1 * lambdaI + params.dP1 * lambdaP + dT1 * params.iota ) / args.pop ) * dQdt;
+    lambda = ( ( params.dI1 * lambdaI + params.dP1 * lambdaP + params.dT1 * params.iota ) / args.pop ) * dQdt;
     lambdaQ = ( (  params.dP1 * lambdaPQ  ) / args.pop ) * dQdt;
   }
   

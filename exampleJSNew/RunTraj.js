@@ -71,7 +71,7 @@ const pompData = {
   data :  dataCases,
   times:  dataCasesTimes,
   t0: 0,
-  skeletonDetail:  { type:"map", deltaT: 1/365 },
+  skeletonDetail:  { type:"map", deltaT: 0.1 },
   covar: dataCovar,
   tcovar: dataCovarTimes,
   zeronames: snippet.zeronames,

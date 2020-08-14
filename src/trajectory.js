@@ -80,7 +80,7 @@ const iterate_map_native = function(X, times, params, deltat, t0, x0, func, obje
   if (deltat <= 0)
     throw new Error("In euler.js: 'delta.t' should be a positive number");
   let nvars = Object.keys(X[0][0]).length;
-  let nreps = X.length;
+  let nreps = X[0].length;
   let npars = Object.keys(params[0]).length;
   let ntimes = times.length;
   let t = t0;
