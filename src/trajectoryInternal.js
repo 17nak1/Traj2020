@@ -121,5 +121,5 @@ exports.trajectory = function (object, params, times, t0, asDataFrame, args){
   //   x$traj <- factor(x$traj)
   // }
 
-  // x
+  return x
 }

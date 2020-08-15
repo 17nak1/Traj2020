@@ -392,7 +392,7 @@ snippet.dmeasure = function (data ,states, params, giveLog = 1) {
   }
   
   if (isFinite(data.deaths)) {
-    let reported_deaths = states.deathsV + states.deathsI;
+    let reported_deaths = states.deathsCV + states.deathsIIQ;
     lik_deaths = mathLib.dpois(data.deaths, reported_deaths + 1e-6, 1);
   } else {
     lik_deaths = 0;

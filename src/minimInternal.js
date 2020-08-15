@@ -76,10 +76,10 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
   return {
     params : start,
     est : est,
-    // transform : transform,
-    // value : val,
-    // convergence : parseInt(conv),
-    // evals : evals,
-    // msg : msg
+    transform : transform,
+    value : val,
+    convergence : parseInt(conv),
+    evals : evals,
+    msg : msg
   }
 }
