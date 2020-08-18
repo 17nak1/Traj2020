@@ -82,6 +82,6 @@ const pompData = {
   globals: globals,
 };
 
-let tm = trajMatch(paramsetData[0],{object: pompData, est: ["betaI"],transform: true, method: "subplex"})
+let tm = trajMatch(paramsetData[0],{object: pompData, est: ["betaI","theta"],transform: true, method: "subplex"})
 
 console.log('finished.');

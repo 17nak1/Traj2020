@@ -64,7 +64,8 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
     } else {
 
       val = opt[1];
-      start[est[0]] = opt[0][0];
+      for(let i = 0 ; i < est.length; i++)
+        start[est[i]] = opt[0][i];
       conv = 0;//opt.convergence;
       evals = opt[2];
 
