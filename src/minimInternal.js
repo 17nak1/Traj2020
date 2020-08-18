@@ -65,6 +65,9 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
 
       // val = opt.value;
       // start[est] = unname(opt$par);
+      Object.keys(start).forEach(key => {
+        if (est.includes(key)) guess[key] = start[key];
+      })
       // conv = opt.convergence;
       // evals = opt.counts;
 

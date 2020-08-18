@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/17nak1/Traj2020#readme",
   "dependencies": {
+    "lib-r-math.js": "^1.0.86",
     "math-erf": "^1.0.0",
     "mathlib": "^0.7.3",
     "seedrandom": "^3.0.5"

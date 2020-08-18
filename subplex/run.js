@@ -18,7 +18,7 @@ let run = function(){
             console.log('number of function evaluations exceeds \'maxit\'');
           break;
         case 0:
-            // console.log('success! tolerance satisfied');
+            console.log('success! tolerance satisfied');
           break;
         case 1:
             console.log('limit of machine precision reached');

@@ -3,6 +3,20 @@ var erf = require('math-erf')
 var seedrandom = require('seedrandom')
 var rng = seedrandom('43553')
 
+let libUnif = require('lib-r-math.js');
+const { rng: { MersenneTwister, timeseed }} = libUnif
+let U = new MersenneTwister(0);
+
+const {
+  Gamma,
+  rng: {
+    LecuyerCMRG,
+    normal: { BoxMuller }
+  }
+} = libUnif
+const lc = new LecuyerCMRG(1234)
+const { rgamma } = Gamma(new BoxMuller(lc))
+
 mathLib.rnorm = function (mu = 0, sd = 1) {
   var val = Math.sqrt(-2 * Math.log(rng())) * Math.cos(2 * pi * rng())
   return val * sd + mu

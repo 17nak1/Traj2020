@@ -27,21 +27,23 @@ const tmofInternal = function (object, params, est, transform, args) {
   }
     
   // it does match(est,names(params))??? Maybe replace by object later
-  let parEstIdx = []; 
-  for (let i = 0; i < est.length; i++) {
-    for (let j = 0; j < Object.keys(params).length; j++) {
-      if(est[i] === Object.keys(params)[j]) parEstIdx.push(j);
-    }
-  }
+  // let parEstIdx = []; 
+  // for (let i = 0; i < est.length; i++) {
+  //   for (let j = 0; j < Object.keys(params).length; j++) {
+  //     if(est[i] === Object.keys(params)[j]) parEstIdx.push(j);
+  //   }
+  // }
+
+  let parEstIdx = est;
 
   if (parEstIdx.some(a => {return a === NaN}))
     throw new Error(ep + "est does not match with parameters")
 
-  return  (par) => {
+  return  (par,parX) => {
     let d;
     if (parEstIdx.length > 0) {
       for (let i = 0; i < parEstIdx.length; i++) {
-        params[Object.keys(params)[parEstIdx[i]]]= par[Object.keys(params)[parEstIdx[i]]];
+        params[parEstIdx[i]]= parX[i+1];
       }
     } 
     
