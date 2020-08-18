@@ -48,16 +48,16 @@ exports.trajMatch = function (params, args) {
   x = trajectory(object)
   // object.states = array(data=x,dim=dim(x)[c(1L,3L)])
   // rownames(object@states) <- rownames(x)
-
+  object.states = x;
   return {
     // "traj.matched.pomp",
-    object,
+    object: object,
     transform: transform,
     est: est,
-    value: -m.fx,
-    // evals: m.evals,
-    // convergence: m.convergence,
-    // msg: m.msg
+    value: -m.value,
+    evals: m.evals,
+    convergence: m.convergence,
+    msg: m.msg
   }
 }
 

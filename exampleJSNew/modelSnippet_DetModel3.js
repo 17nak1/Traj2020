@@ -12,9 +12,6 @@ snippet.T0 = 75
 snippet.T1 = 139
 
 snippet.skeleton = function (states, params, t, dt, covar, args) {
-  if(t==0){
-    console.log(params.betaI, params.iota);
-  }
   let d ={};
   dt = 0.1;
   let SUSC = [states.S];

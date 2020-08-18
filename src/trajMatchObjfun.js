@@ -15,7 +15,7 @@ exports.trajMatchObjfun  = function (object, params, est, transform = false, arg
 const tmofInternal = function (object, params, est, transform, args) {
 
   ep = "in traj.match.objfun : "
-  
+  let tempParams = [];
   if (!est) est = [];
 
   if (Object.keys(params).length === 0) params = coef(object);
@@ -23,7 +23,7 @@ const tmofInternal = function (object, params, est, transform, args) {
   // if ((!is.numeric(params))||(is.null(names(params))))
   //   throw new Error(ep+ "'params' must be a named numeric vector");
   if (transform) {
-    params = partrans(object, params, dir = "toEstimationScale");
+    tempParams = partrans(object, params, dir = "toEstimationScale");
   }
     
   // it does match(est,names(params))??? Maybe replace by object later
@@ -43,15 +43,15 @@ const tmofInternal = function (object, params, est, transform, args) {
     let d;
     if (parEstIdx.length > 0) {
       for (let i = 0; i < parEstIdx.length; i++) {
-        params[parEstIdx[i]]= parX[i+1];
+        tempParams[parEstIdx[i]]= parX[i+1];
       }
     } 
     
-    if (transform) tparams = partrans(object, params, dir="fromEstimationScale");
+    if (transform) tparams = partrans(object, tempParams, dir="fromEstimationScale");
     
     let x = trajectory(
       object,
-      params = transform? tparams : params,
+      params = transform? tparams : tempParams,
       args
     )
     d = dmeasureInternal(
@@ -59,7 +59,7 @@ const tmofInternal = function (object, params, est, transform, args) {
       y=object.data,
       x,
       times = object.times,
-      params = transform? tparams : params,
+      params = transform? tparams : tempParams,
       log = true
     )
     return -d.reduce((a, b) => a + b, 0);

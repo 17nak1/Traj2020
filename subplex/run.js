@@ -1,4 +1,5 @@
 let run = function(){
+  let msg = '';
     if(this.scale.length === 1){
         this.scale[0] = -Math.abs(this.scale[0]);
     }
@@ -15,22 +16,27 @@ let run = function(){
     console.log("FX is ===========" , this)
     switch (this.iflag) {
         case -1:
-            console.log('number of function evaluations exceeds \'maxit\'');
+          msg = 'number of function evaluations exceeds \'maxit\'';
+          console.log(msg);
           break;
         case 0:
-            console.log('success! tolerance satisfied');
+          msg = 'success! tolerance satisfied';
+          console.log(msg);
           break;
         case 1:
-            console.log('limit of machine precision reached');
+          msg = 'limit of machine precision reached';
+          console.log(msg);
           break;
         case -2:
-            console.log('\'parscale\' is too small relative to \'par\'');
+          msg = '\'parscale\' is too small relative to \'par\'';
+          console.log(msg);
           break;
         case 2: default:
-            console.log('impossible error in subplex'); // # nocov
+          msg = 'impossible error in subplex';
+          console.log(msg);
           break;
         }
-    return [this.x0, this.fx]
+    return [this.x0, this.fx, this.nfe + 1, msg]
 }
 
 module.exports = run;

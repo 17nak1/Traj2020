@@ -39,7 +39,7 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
       // opt = subplex(par=guess,fn=objfun,control=opts);?
       subplex.f = objfun
       subplex.x0 = Object.values(guess)
-      subplex.tol = 0.1
+      subplex.tol = 2.220446e-16;
 
       opt = subplex.run()
 
@@ -51,7 +51,7 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
       // opt <- optim(par=guess,fn=objfun,method=method,control=opts)
     }
 
-    // msg <- as.character(opt$message)
+    msg = opt[3];
 
     if (method == "nloptr") {
       throw new Error ("Method 'nloptr' is not translated")
@@ -63,13 +63,10 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
 
     } else {
 
-      // val = opt.value;
-      // start[est] = unname(opt$par);
-      Object.keys(start).forEach(key => {
-        if (est.includes(key)) guess[key] = start[key];
-      })
-      // conv = opt.convergence;
-      // evals = opt.counts;
+      val = opt[1];
+      start[est[0]] = opt[0][0];
+      conv = 0;//opt.convergence;
+      evals = opt[2];
 
     }
   }
