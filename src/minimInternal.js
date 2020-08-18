@@ -11,10 +11,10 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
   let guess = {};
   if (transform) {
     start = partrans(object,start,dir="toEstimationScale")
-    if (Object.keys(start).some(a => {a === null}))//||(!all(est%in%names(start)))
+    if (Object.keys(start).some(a => {a === null}))
       throw new Error("'est' must refer to parameters named in partrans(object,start,dir=toEstimationScale")
   } else {
-    if (Object.keys(start).some(a => {a === null}))// ||(!all(est%in%names(start)))
+    if (Object.keys(start).some(a => {a === null}))
       throw new Error("'est' must refer to parameters named in start.")
   }
   if (est.length > 0) {
@@ -26,41 +26,33 @@ exports.minimInternal = function(objfun, start, est, object, method, transform,
   let val;
   if (est.length === 0) {
     
-    val = objfun(guess)// all woks up to here;need trajectory to test
+    val = objfun(guess);
     conv = NaN;
     evals = [1,0];
     msg = "no optimization performed";
 
   } else {
 
-    let opts = args
-
     if (method == 'subplex') {
-      // opt = subplex(par=guess,fn=objfun,control=opts);?
-      subplex.f = objfun
-      subplex.x0 = Object.values(guess)
+      
+      subplex.f = objfun;
+      subplex.x0 = Object.values(guess);
       subplex.tol = 2.220446e-16;
-
-      opt = subplex.run()
+      opt = subplex.run();
 
     } else if (method=="sannbox") {
-      throw new Error ("Method 'sannbox' is not translated")
+      throw new Error ("Method 'sannbox' is not translated");
     } else if (method=="nloptr") {
-      throw new Error ("Method 'nloptr' is not translated")
+      throw new Error ("Method 'nloptr' is not translated");
     } else {
+      throw new Error ("Only 'subplex' is translated. You need define method ='subplex'");
       // opt <- optim(par=guess,fn=objfun,method=method,control=opts)
     }
 
     msg = opt[3];
 
     if (method == "nloptr") {
-      throw new Error ("Method 'nloptr' is not translated")
-
-    //   val <- opt$objective
-    //   start[est] <- unname(opt$solution)
-    //   conv <- opt$status
-    //   evals <- opt$iterations
-
+      throw new Error ("Method 'nloptr' is not translated");
     } else {
 
       val = opt[1];

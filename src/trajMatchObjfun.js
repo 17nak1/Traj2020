@@ -20,20 +20,10 @@ const tmofInternal = function (object, params, est, transform, args) {
 
   if (Object.keys(params).length === 0) params = coef(object);
   
-  // if ((!is.numeric(params))||(is.null(names(params))))
-  //   throw new Error(ep+ "'params' must be a named numeric vector");
   if (transform) {
     tempParams = partrans(object, params, dir = "toEstimationScale");
   }
     
-  // it does match(est,names(params))??? Maybe replace by object later
-  // let parEstIdx = []; 
-  // for (let i = 0; i < est.length; i++) {
-  //   for (let j = 0; j < Object.keys(params).length; j++) {
-  //     if(est[i] === Object.keys(params)[j]) parEstIdx.push(j);
-  //   }
-  // }
-
   let parEstIdx = est;
 
   if (parEstIdx.some(a => {return a === NaN}))

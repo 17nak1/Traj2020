@@ -24,14 +24,13 @@ exports.trajMatch = function (params, args) {
     
   object = new pomp(pompData);
   
-  // let inputParamSet = Object.assign({}, params);
   if (!start) start = coef(object);
   let objfun = trajMatchObjfun(
     object=object,
     params=start,
     est=est,
     transform=transform);
-    // console.log(objfun([]))
+  
   let m = minimInternal(
     objfun,
     start,
@@ -46,19 +45,16 @@ exports.trajMatch = function (params, args) {
 
   // fill states slot appropriately
   x = trajectory(object)
-  // object.states = array(data=x,dim=dim(x)[c(1L,3L)])
-  // rownames(object@states) <- rownames(x)
   object.states = x;
-  return {
-    // "traj.matched.pomp",
-    object: object,
-    transform: transform,
+
+  return Object.assign(object,
+    {transform: transform,
     est: est,
     value: -m.value,
     evals: m.evals,
     convergence: m.convergence,
     msg: m.msg
-  }
+  })
 }
 
 

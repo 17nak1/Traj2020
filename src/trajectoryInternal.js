@@ -38,23 +38,19 @@ exports.trajectory = function (object, params, times, t0, asDataFrame, args){
   let x0 = initState(object, params);
   let nvar = x0[0].length;
   statenames = Object.keys(x0[0]);
-  // dim(x0) <- c(nvar,nrep,1)
-  // dimnames(x0) <- list(statenames,NULL,NULL)
 
   let type = object.skeletonDetail.type;          // map or vectorfield?
 
   let x;
   if (type === "map") {
-
-    // try {
+    try {
       x = iterateMap(object, times, t0, x0, params);
-    // } catch (error) {
-    //   throw new Error(` ${ep} in map iterator: ${error}`)
-    // }
-      
+    } catch (error) {
+      throw new Error(` ${ep} in map iterator: ${error}`)
+    }  
 
   } else if (type=="vectorfield") {
-    throw new Error("vectorfield is not translated.")
+    throw new Error("vectorfield is not translated.");
   //   znames <- object@zeronames
   //   if (length(znames)>0) x0[znames,,] <- 0
 
@@ -95,31 +91,8 @@ exports.trajectory = function (object, params, times, t0, asDataFrame, args){
   //       x[z,r,-1] <- diff(x[z,r,])
 
   } else {
-
     throw new Erro(`${ep} deterministic skeleton has not been properly specified`);
-    return;
-
   }
-
-  // dimnames(x) <- setNames(dimnames(x),c("variable","rep","time"))
-
-  // if (as.data.frame) {
-  //   x <- lapply(
-  //     seq_len(ncol(x)),
-  //     function (k) {
-  //       nm <- rownames(x)
-  //       y <- x[,k,,drop=FALSE]
-  //       dim(y) <- dim(y)[c(1L,3L)]
-  //       y <- as.data.frame(t(y))
-  //       names(y) <- nm
-  //       y$time <- times
-  //       y$traj <- as.integer(k)
-  //       y
-  //     }
-  //   )
-  //   x <- do.call(rbind,x)
-  //   x$traj <- factor(x$traj)
-  // }
 
   return x
 }
