@@ -439,7 +439,7 @@ snippet.dmeasure = function (data ,states, params, giveLog = 1) {
 }
 
 
-let params_log = ["betaI", "iota","beta_sd", "sigma", "kappa", "gammaI", "gammaH", "gammaC", "gammaV"];
+let params_log = ["betaI", "iota","beta_sd", "sigma", "kappa", "gammaI", "gammaH", "gammaC", "gammaV","TF"];
 let params_logit = ["rho", "theta", "dI0", "dP0", "dT0", "dB0","dI1", "dP1", "dT1", "dB1","qP", "qH", "qC", "mI", "mC", "mV"];
 let statenamesFn = function() {
   let sn = ["S"]
