@@ -1,6 +1,6 @@
 const fs = require('fs');
 let linear = require('./everpolate').linear;
-let rootDirData ='./private_data';
+let rootDirData ='../private_data';
 
 let create_covars = function(endTime="2020-04-27",predTime=null){
 	let t0 = new Date("2019-12-31");

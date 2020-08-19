@@ -1,6 +1,6 @@
 const fs = require('fs');
 let linear = require('./everpolate').linear
-let rootDirData ='./private_data';
+let rootDirData ='../private_data';
 
 
 let create_dataset = function(endTime="2020-05-04",predTime=null){

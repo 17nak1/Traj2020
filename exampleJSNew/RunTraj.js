@@ -5,10 +5,10 @@ const { trajMatch } = require('../src/trajMatch.js');
 const create_dataset = require('./CreateDataset.js');
 const create_covars = require('./CreateCovars.js');
 const snippet = require('./modelSnippet_DetModel3.js');
-const { coef } = require("../src//helpers");
+const { coef } = require("../src/helpers");
 
 
-let rootDirData ='./private_data';
+let rootDirData ='../private_data';
 
 run = 1;
 job = 2;
@@ -84,6 +84,6 @@ const pompData = {
   globals: globals,
 };
 
-let tm = trajMatch(paramsetData[0],{object: pompData, est: ["betaI","theta"],transform: true, method: "subplex"})
+let tm = trajMatch(paramsetData[0],{object: pompData, est: ["betaI", "theta"],transform: true, method: "subplex"})
 
 console.log('finished.',coef(tm), tm.value);
